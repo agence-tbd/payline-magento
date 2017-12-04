@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_customer_edit>
+        <reference name="customer_edit_tab_view">
+            <action method="setTemplate">
+                <template>payline/customer/tab/view.phtml</template>
+            </action>
+        </reference>
+    </adminhtml_customer_edit>
+	
+    <adminhtml_payline_managecontracts_index>
+        <reference name="content">
+            <block type="payline/adminhtml_managecontracts" name="contracts_container">
+                <block type="adminhtml/system_config_switcher" name="store_switcher" as="store_switcher" template="payline/switcher.phtml"></block>
+            </block>
+        </reference>
+    </adminhtml_payline_managecontracts_index>
+	
+    <adminhtml_payline_managecontracts_edit>
+        <reference name="content">
+            <block type="payline/adminhtml_managecontracts_edit" name="contract_edit" />
+        </reference>
+    </adminhtml_payline_managecontracts_edit>
+	
+    <adminhtml_payline_managecontracts_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="payline/adminhtml_managecontracts_grid" name="admin.contracts.grid"/>
+        </block>
+    </adminhtml_payline_managecontracts_grid>
+	
+    <adminhtml_payline_manageproductcategories_index>
+        <reference name="content">
+            <block type="payline/adminhtml_manageproductcategories" name="productcategories_container">
+                <block type="adminhtml/system_config_switcher" name="store_switcher" as="store_switcher" template="payline/switcher.phtml"></block>
+            </block>
+        </reference>
+    </adminhtml_payline_manageproductcategories_index>
+   
+    <adminhtml_payline_manageproductcategories_assign>
+    	<reference name="content">
+    		<block type="payline/adminhtml_manageproductcategories_assign_form" name="manageproductcategories_assign" template="payline/assignProductCategories.phtml">
+    		</block>
+    	</reference>
+    </adminhtml_payline_manageproductcategories_assign>
+
+    <adminhtml_sales_order_view>
+        <reference name="order_totals">
+            <block type="payline/adminhtml_sales_order_total_nxfees" name="nxfees_total" as="nxfees_total"/>
+        </reference>
+    </adminhtml_sales_order_view>
+	
+    <adminhtml_sales_order_invoice_new>
+        <reference name="invoice_totals">
+            <block type="payline/adminhtml_sales_order_total_nxfees" name="nxfees_total" as="nxfees_total"/>
+        </reference>
+    </adminhtml_sales_order_invoice_new>
+
+    <adminhtml_sales_order_invoice_updateqty>
+        <reference name="invoice_totals">
+            <block type="payline/adminhtml_sales_order_total_nxfees" name="nxfees_total" as="nxfees_total"/>
+        </reference>
+    </adminhtml_sales_order_invoice_updateqty>
+
+    <adminhtml_sales_order_invoice_view>
+        <reference name="invoice_totals">
+            <block type="payline/adminhtml_sales_order_total_nxfees" name="nxfees_total" as="nxfees_total"/>
+        </reference>
+    </adminhtml_sales_order_invoice_view>
+    
+    <adminhtml_system_config_edit>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>payline.css</name><params/></action>
+        </reference>
+    </adminhtml_system_config_edit>
+  
+</layout>

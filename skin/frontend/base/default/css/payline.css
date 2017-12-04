@@ -1,0 +1,144 @@
+@CHARSET "UTF-8";
+.iframe-subscribe-wallet, .iframe-update-wallet{
+	width:100%;
+	height:500px;
+	border:none;
+	overflow:hidden;
+}
+
+.iframe-with-perso-data{ 
+	height:700px; 
+}
+
+.wallet-manage-content .actions{
+	margin-top:20px;
+}
+.wallet_details dt{
+    font-weight:bold;
+}
+
+.wallet_details dl dd {
+	padding-left:20px;
+}
+
+.side-col .block-oneclick dl,
+.side-col .block-oneclick .notlogged,
+.sidebar .block-oneclick dl,
+.sidebar .block-oneclick .notlogged,
+.checkout-types .block-oneclick dl,
+.checkout-types .block-oneclick .notlogged {
+	padding:5px;
+}
+.side-col .block-oneclick select,
+.checkout-types .block-oneclick select,
+.sidebar .block-oneclick select{
+	width:100%;
+}
+
+.checkout-types .block-oneclick{
+	text-align:left;
+}
+
+.payline-checkoutonepage-index #wait-txt{
+	display:none;
+	padding:20px;
+    width:300px;
+    height:30px;
+}
+.payline-checkoutonepage-index .popin{
+	position:absolute;
+	display:block!important;
+	background-color:#FFFFFF;
+	border:2px solid black;
+	text-align:center;
+	z-index:999;
+}
+
+.payline-checkoutonepage-index .col-main {
+    padding: 20px 0 0;
+}
+
+fieldset.form-payline {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border:1px solid #BBAFA0;
+    background-color: white;
+}
+
+fieldset.form-payline legend{
+    display: block;
+    color:#BBAFA0;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+fieldset.form-payline legend img{
+    display: block;
+    float: right;
+}
+
+.input-cc-card  {
+  clear : both;
+}
+
+.input-cc-card label{
+  padding-right: 3px;
+}
+
+.input-cc-card label input {
+    /* display:none; */
+  margin-right: -3px;
+}
+
+.input-cc-card  label input + img {
+  cursor:pointer;
+  border:4px solid transparent;
+  float: none;
+}
+
+.input-cc-card  label input:checked + img {
+  border:3px solid #3399cc;
+  padding:1px;
+  float: none;
+}
+
+
+
+form#wallet-checkout p{
+	padding:0 5px;
+}
+.sidebar .payline-logo {
+    display: block;
+    margin: 10px 0;
+    text-align: center;
+}
+#wallet-checkout .secured-by{
+	padding:0 5px;
+	text-align:right;
+	font-size:0.8em;
+}
+table.payline-payment th {
+    font-weight:bold;
+    vertical-align:middle;
+}
+table.payline-payment td {
+    margin-left:5px;
+    width:35%;
+}
+.payline-payment-logo img {
+    display:block;
+    margin:auto;
+}
+
+#payment_form_PaylineCPT li input{
+	margin-top: 13px;
+}
+
+#payment_form_PaylineCPT li img {
+    display: inline;
+    vertical-align: top;
+    float: none;
+}
+
+
+
