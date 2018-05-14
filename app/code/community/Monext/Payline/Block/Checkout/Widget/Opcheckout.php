@@ -4,23 +4,6 @@ class Monext_Payline_Block_Checkout_Widget_Opcheckout extends Mage_Checkout_Bloc
 {
     protected $_custom_methods;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setTemplate('payline/checkout/onepage/widget-opcheckout-js.phtml');
-   }
-
-   /**
-    *
-    * @param Mage_Sales_Block_Order_History $block
-    * @param Varien_Object $transport
-    */
-   public function addHtmlAsChild($block, $transport)
-   {
-       $transport->setHtml($transport->getHtml() . $this->_toHtml());
-   }
-
-
 
    /**
     * Retrieve available payment methods
@@ -39,8 +22,9 @@ class Monext_Payline_Block_Checkout_Widget_Opcheckout extends Mage_Checkout_Bloc
    }
 
 
-
-
+    /**
+     * @return string
+     */
    public function getJsonAllMethods()
    {
        if (is_null($this->_custom_methods)) {
@@ -55,7 +39,6 @@ class Monext_Payline_Block_Checkout_Widget_Opcheckout extends Mage_Checkout_Bloc
                    $html = preg_replace('/display:none;/', '', $this->getPaymentMethodFormHtml($_method));
                    $html = str_replace(array("\r\n","\r","\n"),"",$this->jsQuoteEscape($html));
 
-                   //$html = $this->getPaymentMethodFormHtml($_method);
                    $customMethods[] = array('code'=>$_code,
                            'title'=>$this->escapeHtml($this->getMethodTitle($_method)),
                            'label'=>$this->getMethodLabelAfterHtml($_method),
@@ -69,6 +52,9 @@ class Monext_Payline_Block_Checkout_Widget_Opcheckout extends Mage_Checkout_Bloc
        return Mage::helper('core')->jsonEncode($this->_custom_methods);
    }
 
+    /**
+     * @return string
+     */
    public function getJsonCurrentMethods()
    {
        $currentMethods = array();
@@ -87,6 +73,9 @@ class Monext_Payline_Block_Checkout_Widget_Opcheckout extends Mage_Checkout_Bloc
        return Mage::helper('core')->jsonEncode($currentMethods);
    }
 
+    /**
+     * @return mixed
+     */
    public function getSaveUrl()
    {
        return Mage::getUrl('payline/index/cptWidgetCustom');

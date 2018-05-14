@@ -66,6 +66,13 @@
     };
 
     Review.prototype.initialize = function (saveUrl, successUrl, agreementsForm) {
+
+        if(typeof Payline == 'undefined' || typeof Payline.Api == 'undefined') {
+            console.log('Payline.Api is undefined.');
+            return '';
+        }
+
+
         this.saveUrl = saveUrl;
         this.successUrl = successUrl;
         this.agreementsForm = agreementsForm;

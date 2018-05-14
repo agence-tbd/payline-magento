@@ -21,6 +21,11 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
      */
     protected $order;
 
+    public function getCurrentOrder()
+    {
+        return $this->order;
+    }
+
     protected function _getCustomerSession()
     {
         return Mage::getSingleton('customer/session');
@@ -664,8 +669,12 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
     {
         $result = array();
 
-        $method = $this->getRequest()->getParam('paymentmethod');
+        $data = $this->getRequest()->getParam('payment', array());
+        if(empty($data) or !is_array($data)) {
+            $data = array();
+        }
 
+        $method = $this->getRequest()->getParam('paymentmethod');
         try {
             if(empty($method)) {
                 throw new Exception('No payment method');
@@ -673,7 +682,7 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
             $onePage = Mage::getSingleton('checkout/type_onepage');
             $quote = $onePage->getQuote();
             if($quote and $quote->getId()) {
-                $data=array('method'=>$method);
+                $data['method'] = $method;
                 $quote->getPayment()->importData($data);
             } else {
                 // Incorrect order_id
@@ -690,6 +699,7 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
             $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
         } else {
             $this->getRequest()->setParam('form_key', Mage::getSingleton('core/session')->getFormKey());
+            $this->getRequest()->setPost('payment', $data);
             $this->_forward('saveOrder', 'onepage', 'checkout');
         }
     }

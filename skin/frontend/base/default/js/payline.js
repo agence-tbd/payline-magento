@@ -47,17 +47,22 @@ PaylineWidgetWrapper.prototype = {
             default:
                 this.rootTabSelector = false;
         }*/
-        
+
         this.rootTabSelector = 'pmLayout-.*-mycustompm';
-        
+
         this.initQuoteGrandTotal = init_quote_total;
         this.currencyCode = currency_code;
         this.finalQuoteGrandTotal = 0;
         this.finalPaymentMethods = {};
         this.observer = false;
-        
+
         this.customPmMethods = [];
         this.allPaymentMethods = {};
+
+        this.widgetInitialized = false;
+
+        this.widgetReady = false;
+
         this.preparePmMethods(custom_methods);
     },
 
@@ -67,137 +72,179 @@ PaylineWidgetWrapper.prototype = {
     {
         this.finalQuoteGrandTotal = grantotal;
     },
-    
+
     setFinalPaymentMethods: function(methods)
     {
         this.finalPaymentMethods = methods;
     },
-    
+
     initPayline: function(noAgreement){
 
-        if(typeof Payline.Api != 'undefined') {
-            
+        var $checkoutReview = $('checkout-review-load');
+
+        if(!$checkoutReview) {
+            console.log('Cannot found DOM anchor for payline.');
+            return '';
+        }
+
+        if(typeof Payline != 'undefined' && typeof Payline.Api != 'undefined') {
+
             var elemProgress =  $('payment-progress-opcheckout');
             if (elemProgress) {
-             var elemDd = elemProgress.select('dd').first();
-             elemProgress.select('dt').each(function (item) {
-                  item.addClassName('complete');
+                var elemDd = elemProgress.select('dd').first();
+                elemProgress.select('dt').each(function (item) {
+                    item.addClassName('complete');
 
-                  if(typeof elemDd != 'undefined') {
-                      elemDd.remove();
-                  }
-                item.insert({after:'<dd class="complete"><table class="checkout-payline-order-review-table data-table">'
-                    + $('checkout-review-table').select('tfoot').first().innerHTML
-                    + '</table></dd>'}
-                );
+                    if(typeof elemDd != 'undefined') {
+                        elemDd.remove();
+                    }
+                    item.insert({after:'<dd class="complete"><table class="checkout-payline-order-review-table data-table">'
+                        + $('checkout-review-table').select('tfoot').first().innerHTML
+                        + '</table></dd>'}
+                    );
                 });
                 $('checkout-review-table-wrapper').hide();
             }
-            
+
 
             if(!$("PaylineWidget")) {
-                $('checkout-review-load').insert({after: '<div id="PaylineWidget" data-custompm="customPmHandler" data-auto-init="false"></div>'});
-               Payline.Api.init(this.dataToken, this.dataTemplate);
-               
-               if(noAgreement) {
-                   // Need a MutationObserver to check widget state ... too bad
-                   this.observer = new MutationObserver(function(mutations) {
-                       mutations.forEach(function(mutation) {
-                           
-                           var re = new RegExp('pl-pmLayout-.*-mycustompm'+'(\\w+)',"ig");
-                           var result = re.exec(mutation.target.id);   
-                           
-                           var callshowWidget = false;
-                           //if(result && mutation.addedNodes.length>0) {
-                           if(result) {
-                               callshowWidget = true;
-                               this.allPaymentMethods[result[1]].checked = true;
-                           }
-                           
-                           if(callshowWidget) {
-                               $H(this.allPaymentMethods).each(function(pair) {
-                                   if(!pair.value.checked) {
-                                       callshowWidget = false;
-                                   }
-                               });
-                               
-                               if(callshowWidget) {
-                                   this.showWidget(true);
-                               }
-                           }
-                       }.bind(this));
-                   }.bind(this));
-                   
-                   // configuration of the observer:
-                   var config = { attributes: true, subtree:true, childList: true};
-                   
-                   // pass in the target node, as well as the observer options
-                   this.observer.observe($("PaylineWidget"), config);
-               }
-            }
-            Payline.Api.hide();
-         }
-   },
-   
-   showWidget: function(observer){
-       if(typeof Payline.Api != 'undefined') {
-           $('review-buttons-container').hide();
 
-           $$('.magento-payline-custom-html [id*=payment_form]').each(function(elem){
-               elem.style.display = '';
-           });
-           
-           if(observer) {
-               if(this.observer) {
-                   // Stop observing
-                   this.observer.disconnect();      
-               }
-           } else {
-               Payline.Api.show();
-           }
-           
-           this.setPmMethodTabs();
-       } else {
-           alert('Payline is undefined!');
-       }
-   },
-   
-   setPmMethodTabs: function()
-   {
-       $$('div[id*="pmLayout-"][class*="pl-card"]').each(function(divTab){
-           var re = new RegExp(this.rootTabSelector+'(\\w+)',"ig");
-           var result = re.exec(divTab.id);           
-           var tabSpan = divTab.select('span.pl-card-logo').first();
-           if (tabSpan && result) {
-               tabSpan.setAttribute('style', 'background:none; width:auto !important');
-               
-               if(this.allPaymentMethods[result[1]]) {
-                   tabSpan.update(this.allPaymentMethods[result[1]].title);
-               } else {
-                   tabSpan.update(result[1]);
-               }
-               
-               var divPayment = divTab.up('div').up('div');
-               if(this.finalPaymentMethods && this.finalPaymentMethods[result[1]]) {
-                   divPayment.show();
-               } else {
-                   divPayment.hide();
-               }
-           }
-           
-           
-       }.bind(this));
-   },
+                $checkoutReview.insert({after: '<div id="PaylineWidget" data-auto-init="false" data-custompm="customPmHandler" data-event-didshowstate="didShowStateHandler" class="pl-custom"></div>'});
+
+                Payline.Api.init(this.dataToken, this.dataTemplate);
+
+                this.widgetInitialized = true;
+
+                this.insertBeforeHtml();
+
+                /*
+                if(noAgreement) {
+                    // Need a MutationObserver to check widget state ... too bad
+                    this.observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+
+                            var re = new RegExp('pl-pmLayout-.*-mycustompm'+'(\\w+)',"ig");
+                            var result = re.exec(mutation.target.id);
+
+                            var callshowWidget = false;
+                            //if(result && mutation.addedNodes.length>0) {
+                            if(result) {
+                                callshowWidget = true;
+                                this.allPaymentMethods[result[1]].checked = true;
+                            }
+
+                            if(callshowWidget) {
+                                $H(this.allPaymentMethods).each(function(pair) {
+                                    if(!pair.value.checked) {
+                                        callshowWidget = false;
+                                    }
+                                });
+
+                                if(callshowWidget) {
+                                    this.showWidget(true);
+                                }
+                            }
+                        }.bind(this));
+                    }.bind(this));
+
+
+                    // configuration of the observer:
+                    var config = { attributes: true, subtree:true, childList: true};
+
+                    // pass in the target node, as well as the observer options
+                    this.observer.observe($("PaylineWidget"), config);
+
+
+
+                }
+                /* */
+            }
+
+            if(!this.widgetReady) {
+                Payline.Api.hide();
+            }
+        } else {
+            console.log('Payline.Api is undefined.');
+        }
+    },
+
+    insertBeforeHtml: function() {
+
+    },
+
+    insertAfterHtml: function() {
+
+    },
+
+    showWidget: function(observer){
+        if(this.widgetInitialized) {
+
+            $reviewContainer = $('review-buttons-container');
+            if($reviewContainer) {
+                $('review-buttons-container').hide();
+            }
+
+            $$('.magento-payline-custom-html [id*=payment_form]').each(function(elem){
+                elem.style.display = '';
+            });
+
+            if(observer) {
+                if(this.observer) {
+                    // Stop observing
+                    this.observer.disconnect();
+                }
+            } else {
+                Payline.Api.show();
+            }
+
+            this.setPmMethodTabs();
+
+            if(!this.widgetReady) {
+                this.insertAfterHtml();
+            }
+
+            this.widgetReady = true;
+        } else {
+            alert('Payline is not initialized!');
+        }
+    },
+
+    setPmMethodTabs: function()
+    {
+        $$('div[id*="pmLayout-"][class*="pl-card"]').each(function(divTab){
+            var re = new RegExp(this.rootTabSelector+'(\\w+)',"ig");
+            var result = re.exec(divTab.id);
+            var tabSpan = divTab.select('span.pl-card-logo').first();
+            if (tabSpan && result) {
+                tabSpan.setAttribute('style', 'background:none; width:auto !important');
+
+                if(this.allPaymentMethods[result[1]]) {
+                    tabSpan.update(this.allPaymentMethods[result[1]].title);
+                } else {
+                    tabSpan.update(result[1]);
+                }
+
+                var divPayment = divTab.up('div').up('div');
+                if(this.finalPaymentMethods && this.finalPaymentMethods[result[1]]) {
+                    divPayment.show();
+                } else {
+                    divPayment.hide();
+                }
+            }
+
+
+        }.bind(this));
+    },
 
     preparePmMethods: function(custom_methods) {
         custom_methods.each(function(payment){
             this.allPaymentMethods[payment.code] = {title:payment.title, checked:false, code:payment.code};
             this.customPmMethods.push({"paymentMethodId":("myCustomPm"+payment.code),
-                 "html": this.paymentTemplate.evaluate({paymentHtml: payment.html, paymentCode: payment.code})
+                "html": this.paymentTemplate.evaluate({paymentHtml: payment.html, paymentCode: payment.code})
             });
         }.bind(this));
     },
-    
+
     getPmMethods: function()
     {
         return this.customPmMethods;
@@ -211,7 +258,7 @@ PaylineWidgetWrapper.prototype = {
             params += '&'+Form.serialize(review.agreementsForm);
         }
         params.save = true;
-        
+
         var request = new Ajax.Request(
             this.saveUrl,
             {
@@ -231,40 +278,40 @@ var PaylineDirectMethod = Class.create();
 PaylineDirectMethod.prototype = {
     initialize: function(code, tokenUrl,cryptedKeys,accessKeyRef,tokenReturnURL){
         // Payment code
-       this.code = code;
+        this.code = code;
         // Token list by method
-       this.tokenUrl=tokenUrl;
+        this.tokenUrl=tokenUrl;
         // Internal crypted key
-       this.cryptedKeys=cryptedKeys;
+        this.cryptedKeys=cryptedKeys;
         // Payline user key
-       this.accessKeyRef=accessKeyRef;
+        this.accessKeyRef=accessKeyRef;
         // Return url for post redirection
-       this.tokenReturnURL = tokenReturnURL;
+        this.tokenReturnURL = tokenReturnURL;
         // Regex to find back real name for data
-       this.regexPayment= /^payment\[(.+)\]/;
+        this.regexPayment= /^payment\[(.+)\]/;
         // Keep all values
-       this.paymentInputs= $H({});
+        this.paymentInputs= $H({});
         // Errors code and label
-       this.errors = {};
-       // Initialize inputs changes to fill paymentInputs
-       this.onChangeInputs = this.checkInputChange.bind(this);
-       // Check inputs changes
-       this.followInputs();
-       
-       this.onComplete = this.resetLoadWaiting.bindAsEventListener(this);
+        this.errors = {};
+        // Initialize inputs changes to fill paymentInputs
+        this.onChangeInputs = this.checkInputChange.bind(this);
+        // Check inputs changes
+        this.followInputs();
+
+        this.onComplete = this.resetLoadWaiting.bindAsEventListener(this);
     },
     // Set user error by code
     setErrors: function(errors){
         this.errors = errors;
     },
     showError: function(errorCode){
-        
+
         if (this.errors[errorCode]) {
             var errorMsg = 'Error ' + errorCode + ': "' + this.errors[errorCode] + '"';
         } else {
             var errorMsg = 'Unexpected error: ' + errorCode;
         }
-        
+
         alert(errorMsg);
     },
     // Retrieve real name from input name
@@ -272,9 +319,9 @@ PaylineDirectMethod.prototype = {
     {
         matchPayment = this.regexPayment.exec(input.name);
         if (matchPayment) {
-           return matchPayment[1];
+            return matchPayment[1];
         } else {
-           return false;
+            return false;
         }
     },
     // Init observe on payments inputs
@@ -299,37 +346,37 @@ PaylineDirectMethod.prototype = {
     // Prepare data to send to payline
     save: function(){
         var isPayline = false;
-          $$('input[name=payment[method]]').each(function(elem){
-                if(elem.checked && elem.getAttribute('value')==this.code) {
-                  isPayline = true;
-                }
-          }.bind(this));
+        $$('input[name=payment[method]]').each(function(elem){
+            if(elem.checked && elem.getAttribute('value')==this.code) {
+                isPayline = true;
+            }
+        }.bind(this));
 
-          // Check if we have some work to do
+        // Check if we have some work to do
         if (!isPayline) {
-              payment.save();
-          } else {
-              if (checkout.loadWaiting!=false) return;
-              var validator = new Validation(payment.form);
-              if (validator.validate()) {
-                  checkout.setLoadWaiting('payment');
-                  var requestParameters= {
-                            data: this.cryptedKeys[this.paymentInputs.get('cc_type')],
-                            accessKeyRef: this.accessKeyRef,
-                            cardNumber:         this.paymentInputs.get('cc_number'),
-                            cardExpirationDate: this.paymentInputs.get('cc_exp_month') + this.paymentInputs.get('cc_exp_year'),
-                            cardCvx:            this.paymentInputs.get('cc_cid')
-                          };
+            payment.save();
+        } else {
+            if (checkout.loadWaiting!=false) return;
+            var validator = new Validation(payment.form);
+            if (validator.validate()) {
+                checkout.setLoadWaiting('payment');
+                var requestParameters= {
+                    data: this.cryptedKeys[this.paymentInputs.get('cc_type')],
+                    accessKeyRef: this.accessKeyRef,
+                    cardNumber:         this.paymentInputs.get('cc_number'),
+                    cardExpirationDate: this.paymentInputs.get('cc_exp_month') + this.paymentInputs.get('cc_exp_year'),
+                    cardCvx:            this.paymentInputs.get('cc_cid')
+                };
 
-                  if(this.canUseCors()) {
-                      this.saveWithAjax(requestParameters);
-                  } else {
-                      this.saveWithPost(requestParameters);
-                  }
-              }
-          }
+                if(this.canUseCors()) {
+                    this.saveWithAjax(requestParameters);
+                } else {
+                    this.saveWithPost(requestParameters);
+                }
+            }
+        }
     },
-    
+
     resetLoadWaiting: function(){
         checkout.setLoadWaiting(false);
     },
@@ -339,25 +386,25 @@ PaylineDirectMethod.prototype = {
     {
         // Cors detection is dactivated by default
         return false;
-        
+
         var cors = false;
         if ('withCredentials' in new XMLHttpRequest()) {
-           // Supports cross-domain requests
-           cors = true;
+            // Supports cross-domain requests
+            cors = true;
         }
         else if(typeof XDomainRequest !== "undefined"){
-           // Use IE-specific "CORS" code with XDR but we know IE capabilities :-(
-         if(Prototype.Browser.IE) {
+            // Use IE-specific "CORS" code with XDR but we know IE capabilities :-(
+            if(Prototype.Browser.IE) {
                 var ua = navigator.userAgent;
                 var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
                 if (re.exec(ua) != null) {
                     rv = parseFloat( RegExp.$1 );
                     // Problem detected on IE8
-                 if(rv > 8.0 ) {
-                       cors = true;
+                    if(rv > 8.0 ) {
+                        cors = true;
                     }
                 }
-           }
+            }
         }
         return cors;
     },
@@ -366,60 +413,60 @@ PaylineDirectMethod.prototype = {
     {
         var paramArray = new Array();
         $H(requestParameters).each(function(pair){
-          paramArray.push(pair.key + '=' + pair.value);
+            paramArray.push(pair.key + '=' + pair.value);
         });
 
         var request = new Ajax.Request(this.tokenUrl, {
-                  method: 'post',
-                  // Using postBody avoid to use encodeURIComponent with parameters
-                  postBody: paramArray.join('&'),
-                  contentType: 'application/x-www-form-urlencoded',
-                onCreate: function(response) { // here comes the fix
-                      // request.transport.setRequestHeader = Prototype.emptyFunction;
-                 if (response.request.isSameOrigin()) {
-                        return;
-                    }
-
-                    var t = response.transport;
-                    t.setRequestHeader = t.setRequestHeader.wrap(function(original, k, v) {
-                        if (/^(accept|accept-language|content-language)$/i.test(k))
-                            return original(k, v);
-                        if (/^content-type$/i.test(k) && /^(application\/x-www-form-urlencoded|multipart\/form-data|text\/plain)(;.+)?$/i.test(v))
-                            return original(k, v);
-                        return;
-                    });
-                },
-                onComplete: this.onComplete,
-                onSuccess: function(transport) {
-                      response={};
-                      if(transport.responseJSON) {
-                          response = transport.responseJSON;
-                      } else if (transport.responseText)  {
-                          result = transport.responseText.split('=');
-                          if(result) {
-                              response[result[0]] = result[1];
-                          }
-                      } else {
-                          response = {errorCode:1, message:'No result'};
-                      }
-
-                      if(typeof response.data!=='undefined') {
-                          this.saveStep(response.data);
-                      } else if (response.errorCode) {
-                          this.showError(response.errorCode)
-                      } else {
-                          this.showError('ajax_call');
-                      }
-                  }.bind(this),
-                onFailure: function() {
-                    alert('Failed to call secure server');
+            method: 'post',
+            // Using postBody avoid to use encodeURIComponent with parameters
+            postBody: paramArray.join('&'),
+            contentType: 'application/x-www-form-urlencoded',
+            onCreate: function(response) { // here comes the fix
+                // request.transport.setRequestHeader = Prototype.emptyFunction;
+                if (response.request.isSameOrigin()) {
+                    return;
                 }
+
+                var t = response.transport;
+                t.setRequestHeader = t.setRequestHeader.wrap(function(original, k, v) {
+                    if (/^(accept|accept-language|content-language)$/i.test(k))
+                        return original(k, v);
+                    if (/^content-type$/i.test(k) && /^(application\/x-www-form-urlencoded|multipart\/form-data|text\/plain)(;.+)?$/i.test(v))
+                        return original(k, v);
+                    return;
+                });
+            },
+            onComplete: this.onComplete,
+            onSuccess: function(transport) {
+                response={};
+                if(transport.responseJSON) {
+                    response = transport.responseJSON;
+                } else if (transport.responseText)  {
+                    result = transport.responseText.split('=');
+                    if(result) {
+                        response[result[0]] = result[1];
+                    }
+                } else {
+                    response = {errorCode:1, message:'No result'};
+                }
+
+                if(typeof response.data!=='undefined') {
+                    this.saveStep(response.data);
+                } else if (response.errorCode) {
+                    this.showError(response.errorCode)
+                } else {
+                    this.showError('ajax_call');
+                }
+            }.bind(this),
+            onFailure: function() {
+                alert('Failed to call secure server');
+            }
         });
     },
     saveWithPost: function (requestParameters)
     {
         requestParameters.returnURL = this.tokenReturnURL;
-        
+
         var frameId = 'output_token_response';
         var form = new Element('form', { id: 'form_post_token', action: this.tokenUrl, method: 'post',target:frameId });
         $H(requestParameters).each(function(input){
@@ -431,7 +478,7 @@ PaylineDirectMethod.prototype = {
 
         // Old school event attachement to prevent IE8 bugs
         if(iframe.attachEvent) {
-           iframe.attachEvent('onload', this.postIframeLoad.bind(this));
+            iframe.attachEvent('onload', this.postIframeLoad.bind(this));
         } else {
             iframe.onload = this.postIframeLoad.bind(this);
         }
@@ -447,7 +494,7 @@ PaylineDirectMethod.prototype = {
         var iframe = Event.element(event);
         var idoc= iframe.contentDocument || iframe.contentWindow.document;
         var parWindow = idoc.defaultView || idoc.parentWindow;
-        
+
         // Prevent check when onload is fired when iframe added to dom
         // have to wait for submit
         if(parWindow.document.body.innerHTML) {
@@ -464,7 +511,7 @@ PaylineDirectMethod.prototype = {
             this.resetLoadWaiting();
         }
     },
-    
+
     // Bypass the payment save method
     saveStep: function(token)
     {
@@ -479,17 +526,17 @@ PaylineDirectMethod.prototype = {
         saveParameters['payment[cc_cid]']=  this.paymentInputs.get('cc_cid');
         saveParameters['payment[assign_session]']=  1;
         // Manual post data to avoid posting extra data by payment class
-       new Ajax.Request(payment.saveUrl, {
-                method:'post',
-                parameters: saveParameters,
-                onComplete:  function(transport){
-                    this.resetForm(token);
-                    payment.nextStep(transport);
-                }.bind(this),
-                onSuccess:  function(){
-                    checkout.setLoadWaiting(false);
-                },
-                onFailure: checkout.ajaxFailure.bind(checkout)
+        new Ajax.Request(payment.saveUrl, {
+            method:'post',
+            parameters: saveParameters,
+            onComplete:  function(transport){
+                this.resetForm(token);
+                payment.nextStep(transport);
+            }.bind(this),
+            onSuccess:  function(){
+                checkout.setLoadWaiting(false);
+            },
+            onFailure: checkout.ajaxFailure.bind(checkout)
         });
     },
     // Prevent review to post data
@@ -502,10 +549,10 @@ PaylineDirectMethod.prototype = {
                 switch(el)
                 {
                     case 'card_token_pan':
-                      element.setValue(token);
-                      break;
+                        element.setValue(token);
+                        break;
                     default:
-                      element.clear();
+                        element.clear();
                 }
             }
         }.bind(this));

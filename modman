@@ -1,0 +1,12 @@
+# Module Monext_Payline
+app/code/community/Monext/Payline   app/code/community/Monext/Payline
+app/locale/en_US/Monext_Payline.csv   app/locale/en_US/Monext_Payline.csv
+app/locale/fr_FR/Monext_Payline.csv   app/locale/fr_FR/Monext_Payline.csv
+app/etc/modules/Monext_Payline.xml   app/etc/modules/Monext_Payline.xml
+app/design/frontend/base/default/template/payline   app/design/frontend/base/default/template/payline
+app/design/frontend/base/default/layout/payline.xml   app/design/frontend/base/default/layout/payline.xml
+app/design/adminhtml/default/default/template/payline   app/design/adminhtml/default/default/template/payline
+app/design/adminhtml/default/default/layout/payline.xml   app/design/adminhtml/default/default/layout/payline.xml
+skin/frontend/base/default/images/monext   skin/frontend/base/default/images/monext
+skin/frontend/base/default/css/payline.css   skin/frontend/base/default/css/payline.css
+skin/frontend/base/default/js/payline.js   skin/frontend/base/default/js/payline.js

@@ -436,27 +436,33 @@ class Monext_Payline_Model_Observer
 
         if ($response['goto_section'] == 'payment') {
 
-            $contractNumber = Mage::helper('payline')->getDefaultContractNumberForWidget();
-            if(empty($contractNumber)) {
-                throw new Exception('Cannot find valid contract number');
-            }
-            $onePage = Mage::getSingleton('checkout/type_onepage');
-            $onePage->getQuote()->getPayment()->importData(array('method'=>'PaylineCPT', 'cc_type'=>$contractNumber));
+            try {
+                $contractNumber = Mage::helper('payline')->getDefaultContractNumberForWidget();
+                if(empty($contractNumber)) {
+                    throw new Exception('Cannot find valid contract number');
+                }
+                $onePage = Mage::getSingleton('checkout/type_onepage');
+                $onePage->getQuote()->getPayment()->importData(array('method'=>'PaylineCPT', 'cc_type'=>$contractNumber));
 
 
-            $layout = $controller->getLayout();
-            $update = $layout->getUpdate();
-            // Needed with cache activated
-            $update->setCacheId(uniqid("payline_onepage_review_payline"));
+                $layout = $controller->getLayout();
+                $update = $layout->getUpdate();
+                // Needed with cache activated
+                $update->setCacheId(uniqid("payline_onepage_review_payline"));
 
-            $controller->loadLayout(array('checkout_onepage_review','payline_onepage_review_handler'), true, true);
-            $response['goto_section'] = 'review';
-            $response['update_section'] = array(
+                $controller->loadLayout(array('checkout_onepage_review','payline_onepage_review_handler'), true, true);
+                $response['goto_section'] = 'review';
+                $response['update_section'] = array(
                     'name' => 'review',
                     'html' => $controller->getLayout()->getBlock('root')->toHtml()
-            );
+                );
 
-            $controller->getResponse()->setBody(Mage::helper('core')->jsonEncode($response));
+                $controller->getResponse()->setBody(Mage::helper('core')->jsonEncode($response));
+
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+
         }
 
         return $this;
@@ -464,6 +470,7 @@ class Monext_Payline_Model_Observer
 
 
     /**
+     * core_block_abstract_to_html_after
      *
      * @param Varien_Event_Observer $observer
      */
@@ -477,12 +484,15 @@ class Monext_Payline_Model_Observer
         $transport = $observer->getEvent()->getTransport();
 
         if($block instanceof Mage_Checkout_Block_Onepage_Shipping_Method) {
-            $block->getLayout()
-                ->createBlock('payline/checkout_widget_opcheckout', 'payline_checkout_widget_opcheckout_init')
-                ->setTemplate('payline/checkout/onepage/widget-opcheckout-js-init.phtml')
-                ->addHtmlAsChild($block, $transport);
-        }
 
+            $htmlShipment =   $transport->getHtml();
+
+            $blockPayline = $block->getLayout()
+                ->createBlock('payline/checkout_widget_opcheckout', 'payline_checkout_widget_opcheckout_init')
+                ->setTemplate('payline/checkout/onepage/widget-opcheckout-js-init.phtml');
+
+            $transport->setHtml($htmlShipment . $blockPayline->toHtml());
+        }
     }
 
 

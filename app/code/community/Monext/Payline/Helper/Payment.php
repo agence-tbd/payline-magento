@@ -65,7 +65,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         if ($buyerFirstName == null || $buyerFirstName == '') {
             $buyerFirstName = substr($billingAddress->getFirstname(), 0, 50);
         }
-        
+
         $buyerPrefix = $customer->getPrefix();
         if($buyerPrefix == 'Mme'){
           $array['buyer']['title'] = '1';
@@ -75,7 +75,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
           $array['buyer']['title'] = '4';
         } else {
           $array['buyer']['title'] = '4';
-        }              
+        }
         $array['buyer']['lastName'] = Mage::helper('payline')->encodeString($buyerLastName);
         $array['buyer']['firstName'] = Mage::helper('payline')->encodeString($buyerFirstName);
         $email = $customer->getEmail();
@@ -155,10 +155,10 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         $array['billingAddress']['state'] = Mage::helper('payline')->encodeString($billingAddress->getRegion());
         $billingPhone = str_replace($forbidenPhoneCars, '', $billingAddress->getTelephone());
         if (preg_match($regexpPhone, $billingPhone)) {
-            $array['billingAddress']['phone'] = $billingPhone;            
+            $array['billingAddress']['phone'] = $billingPhone;
         }
         if($billingPhone){
-          $array['buyer']['mobilePhone'] = $billingPhone;        
+          $array['buyer']['mobilePhone'] = $billingPhone;
         }else{
           $array['buyer']['mobilePhone'] = $shippingPhone;
         }
