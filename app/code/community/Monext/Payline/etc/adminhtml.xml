@@ -42,12 +42,20 @@
                     </system>
                     <catalog>
                     	<children>
-                    		<payline>
+                    	    <payline>
                                 <title>Manage Payline Product Categories</title>
                                 <sort_order>10</sort_order>
                             </payline>
                         </children>
                     </catalog>
+                    <payline>
+                    	<children>
+                    	    <contract>
+                                <title>Manage Payline Contracts</title>
+                                <sort_order>10</sort_order>
+                            </contract>
+                        </children>
+                    </payline>
                 </children>
             </admin>
         </resources>

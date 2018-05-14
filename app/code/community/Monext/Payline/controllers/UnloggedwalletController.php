@@ -11,7 +11,8 @@ class Monext_Payline_UnloggedwalletController extends Mage_Core_Controller_Front
      * New subscription notification
      */
     public function subscribeNotifyAction(){
-        $res = Mage::helper('payline')->initPayline('WALLET')->getWebWallet(array('token' => $_GET['token'], 'version' => Monext_Payline_Helper_Data::VERSION));
+        $queryData = $this->getRequest()->getQuery();
+        $res = Mage::helper('payline')->initPayline('WALLET')->getWebWallet(array('token' => $queryData['token'], 'version' => Monext_Payline_Helper_Data::VERSION));
         $redirectUrl="payline/wallet/manage";
         if (!isset($res['result']) || $res['result']['code']!='02500'){
             if(isset($res['result'])){
@@ -68,8 +69,9 @@ class Monext_Payline_UnloggedwalletController extends Mage_Core_Controller_Front
      * New subscription notification
      */
     public function updateNotifyAction(){
-    	$customerData = Mage::getSingleton('customer/session')->getCustomer()->getData();
-        Mage::helper('payline')->initPayline('WALLET')->getWebWallet(array('token' => $_GET['token'], 'version' => Monext_Payline_Helper_Data::VERSION)); // appel sans traitement pour désactiver la notification
+    	$queryData = $this->getRequest()->getQuery();
+        $customerData = Mage::getSingleton('customer/session')->getCustomer()->getData();
+        Mage::helper('payline')->initPayline('WALLET')->getWebWallet(array('token' => $queryData['token'], 'version' => Monext_Payline_Helper_Data::VERSION)); // appel sans traitement pour dï¿½sactiver la notification
     	$res = Mage::helper('payline')->initPayline('WALLET')->getCards(array('contractNumber' => $customerData['wallet_contract_number'], 'walletId' => $customerData['wallet_id']));
         $redirectUrl="payline/wallet/manage";
         if ($res['result']['code']!='02500'){

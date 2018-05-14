@@ -5,6 +5,11 @@
  */
 class Monext_Payline_Adminhtml_Payline_ManageproductcategoriesController extends Mage_Adminhtml_Controller_Action
 {
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/payline');
+    }
+
     public function indexAction()
     {
         $this->_title($this->__('Manage Payline Product Categories'));
@@ -27,9 +32,9 @@ class Monext_Payline_Adminhtml_Payline_ManageproductcategoriesController extends
     	$data = array('payline_category_id' => -1, 'payline_category_label' => '');
     	$model->addData($data);
     	try {
-    		$model->setId($rowId)->save();
+            $model->setId($rowId)->save();
     	} catch (Exception $e){
-    		echo $e->getMessage();
+            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
     	}
     	$this->_redirect('*/*/');
     }
@@ -73,7 +78,7 @@ class Monext_Payline_Adminhtml_Payline_ManageproductcategoriesController extends
 			try {
 				$model->setId($rowId)->save();
 			} catch (Exception $e){
-				echo $e->getMessage();
+				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
 			}
     		$this->_redirect('*/*/index');
     		return;

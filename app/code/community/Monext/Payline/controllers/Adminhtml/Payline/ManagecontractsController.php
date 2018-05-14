@@ -6,6 +6,11 @@
 class Monext_Payline_Adminhtml_Payline_ManagecontractsController extends Mage_Adminhtml_Controller_Action
 {
 
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('payline/contract');
+    }
+
     public function indexAction()
     {
         $this->_title($this->__('Manage Payline Contracts'));
