@@ -19,7 +19,12 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
         return $quote->getReservedOrderId();
     }
 
-    public function getDataToken()
+    public function getDataTokenForShortcut()
+    {
+        return $this->getDataToken(true);
+    }
+
+    public function getDataToken($forShortcut = false)
     {
         if (is_null($this->_token)) {
             $this->_token = false;
@@ -32,6 +37,10 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
                 $array['version'] = Monext_Payline_Helper_Data::VERSION;
                 $array['payment']['action'] = Mage::getStoreConfig('payment/PaylineCPT/payline_payment_action');
                 $array['payment']['mode'] = 'CPT';
+
+
+
+                $returnUrl = Mage::getUrl('payline/index/cptReturnWidget');
                 $array['payment']['contractNumber'] = $this->getDefaultContractNumberForWidget();
                 $array['contracts'] = $this->getContractsForWidget(true);
                 $array['secondContracts'] = $this->getContractsForWidget(false);
@@ -40,8 +49,16 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
                 }
 
 
+
+                if($forShortcut) {
+                    $array['payment']['contractNumber'] = $this->getContractNumberForWidgetShortcut();
+                    $array['contracts'] = array($array['payment']['contractNumber']);
+                    $array['secondContracts'] = array('');
+                }
+
+
                 $paylineSDK = $this->initPayline('CPT', $array['payment']['currency']);
-                $paylineSDK->returnURL          = Mage::getUrl('payline/index/cptReturnWidget');
+                $paylineSDK->returnURL          = $returnUrl;
                 $paylineSDK->cancelURL          = $paylineSDK->returnURL;
                 $paylineSDK->notificationURL    = $paylineSDK->returnURL;
 
@@ -105,6 +122,18 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
     public function getDataTemplate()
     {
         return $this->getCptConfigTemplate();
+    }
+
+    public function getContractNumberForWidgetShortcut()
+    {
+        return Mage::getStoreConfig('payline/PaylineSHORTCUT/use_contracts');
+    }
+
+    public function getExcludeShippingMethodForWidgetShortcut()
+    {
+        $methods = explode(',', Mage::getStoreConfig('payline/PaylineSHORTCUT/exclude_shipping_method'));
+
+        return $methods;
     }
 
 } // end class

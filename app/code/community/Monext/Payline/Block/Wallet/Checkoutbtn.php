@@ -1,5 +1,6 @@
 <?php
-class Monext_Payline_Block_Wallet_Checkoutbtn extends Mage_Core_Block_Template{
+class Monext_Payline_Block_Wallet_Checkoutbtn extends Mage_Core_Block_Template
+{
     protected $_template='payline/wallet/checkoutbtn.phtml';
     
     public function getRedirectUrl(){

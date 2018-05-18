@@ -1,0 +1,8 @@
+<?php if ($this->hasToDisplay()) :?>
+
+    <div id='PaylineWidget'
+         data-token='<?php echo Mage::helper('payline/widget')->getDataTokenForShortcut() ?>'
+         data-template='shortcut'
+         data-partnerreturnurl='<?php echo Mage::getUrl('payline/shortcut/') ?>'
+    ></div>
+<?php endif;?>

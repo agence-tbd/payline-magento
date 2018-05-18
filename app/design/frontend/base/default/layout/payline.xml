@@ -60,11 +60,17 @@
     </customer_account>
     
     <checkout_cart_index>
+        <reference name="head">
+            <block type="payline/checkout_widget_header" name="checkout.cart.payline.widget.header" as="payline-review-widget-header" translate="label" ifconfig="payline/PaylineSHORTCUT/active"/>
+            <action method="addItem" ifconfig="payline/PaylineSHORTCUT/active"><type>skin_js</type><name>js/payline.js</name></action>
+        </reference>
+
         <reference name="checkout.cart.methods">
             <block type="payline/wallet_checkoutbtn" after="checkout.cart.methods.onepage" name="payline-wallet.checkoutbtn" ifconfig="payment/PaylineWALLET/active"/>
         </reference>
         <reference name="checkout.cart.top_methods">
             <block type="payline/wallet_checkoutbtn" after="checkout.cart.methods.onepage" name="payline-wallet.checkoutbtn" ifconfig="payment/PaylineWALLET/active"/>
+            <block type="payline/checkout_widget_shortcut_button" after="checkout.cart.methods.onepage" name="payline-shortcut.button" template="payline/checkout/shortcut/button.phtml"  ifconfig="payline/PaylineSHORTCUT/active" />
         </reference>
     </checkout_cart_index>
     
@@ -207,5 +213,53 @@
         </reference>
     </payline_onepage_review_handler>
 
+
+    <payline_shortcut_index translate="label">
+        <label>Shortcut One Page Checkout</label>
+        <remove name="left"/>
+
+        <reference name="root">
+            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
+        </reference>
+
+        <reference name="head">
+            <block type="payline/checkout_widget_header" name="checkout.cart.payline.widget.header" as="payline-review-widget-header" translate="label" ifconfig="payline/PaylineSHORTCUT/active"/>
+            <action method="addItem" ifconfig="payline/PaylineSHORTCUT/active"><type>skin_js</type><name>js/payline.js</name></action>
+        </reference>
+
+        <reference name="content">
+            <block type="payline/checkout_widget_shortcut_onepage" name="payline-shortcut.button" template="payline/checkout/shortcut/onepage.phtml">
+                <block type="payline/checkout_widget_shortcut_shipping" name="payline-shortcut.shipping-method" template="payline/checkout/shortcut/shipping.phtml"/>
+                <block type="checkout/onepage_review_info" name="payline-shortcut.review-info" template="checkout/onepage/review/info.phtml">
+                    <action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>checkout/onepage/review/item.phtml</template></action>
+                    <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>checkout/onepage/review/item.phtml</template></action>
+                    <action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>checkout/onepage/review/item.phtml</template></action>
+                    <block type="checkout/cart_totals" name="checkout.onepage.review.info.totals" as="totals" template="checkout/onepage/review/totals.phtml"/>
+                    <block type="core/text_list" name="checkout.onepage.review.info.items.before" as="items_before" translate="label">
+                        <label>Items Before</label>
+                    </block>
+                    <block type="core/text_list" name="checkout.onepage.review.info.items.after" as="items_after" translate="label">
+                        <label>Items After</label>
+                    </block>
+                    <block type="checkout/agreements" name="checkout.onepage.agreements" as="agreements" template="checkout/onepage/agreements.phtml"/>
+                    <block type="core/template" name="checkout.onepage.review.button" as="button" template="checkout/onepage/review/button.phtml"/>
+                </block>
+            </block>
+        </reference>
+    </payline_shortcut_index>
+
+
+
+    <payline_shortcut_shippingmethod>
+        <remove name="right"/>
+        <remove name="left"/>
+
+        <block type="payline/checkout_widget_shortcut_shipping" name="root" output="toHtml" template="payline/checkout/shortcut/shipping.phtml"/>
+    </payline_shortcut_shippingmethod>
+
+
+    <payline_shortcut_review translate="label">
+        <update handle="checkout_onepage_review"/>
+    </payline_shortcut_review>
   
 </layout>

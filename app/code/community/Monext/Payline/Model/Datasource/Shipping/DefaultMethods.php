@@ -3,7 +3,7 @@
  * Class used as a datasource to display available shipping methods
  * Only the 3 basic (no user configuration during checkout process) Magento methods are available
  */
-class Monext_Payline_Model_Datasource_Shippingmethods
+class Monext_Payline_Model_Datasource_Shipping_DefaultMethods
 {
     public function toOptionArray(){
         $availableMethods=array();

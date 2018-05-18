@@ -329,7 +329,7 @@
                 <payline_payments_availables>
                     <PaylineCPT type="group" translate="label">
                       <label>Payline - Cash web paiement</label>
-                      <sort_order>203</sort_order>
+                      <sort_order>205</sort_order>
                       <show_in_default>1</show_in_default>
                       <show_in_website>1</show_in_website>
                       <show_in_store>1</show_in_store>
@@ -481,9 +481,58 @@
                         </advanced_settings_CPT>
                       </fields>
             </PaylineCPT>
+
+            <PaylineSHORTCUT type="group" translate="label">
+                    <label>Payline - Shortcut</label>
+                    <sort_order>210</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <group>payline_payments</group>
+                    <include>1</include>
+                    <activity_path>payline/PaylineSHORTCUT/active</activity_path>
+                    <frontend_type>text</frontend_type>
+                    <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
+                    <comment>Select payments in your shopping cart. Payline will process your card payments through the Payline Gateway.</comment>
+                    <fields>
+                        <active translate="label">
+                            <!--<config_path>payment/PaylineCPT/active</config_path>-->
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </active>
+                        <exclude_shipping_method translate="label comment">
+                            <label>Exclude shipping method</label>
+                            <comment>Shipping method to not use with shortcut.</comment>
+                            <source_model>payline/datasource_Shipping_AllMethods</source_model>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </exclude_shipping_method>
+                        <use_contracts translate="label comment">
+                            <label>Select contract used</label>
+                            <source_model>payline/datasource_contracts</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_contracts>
+                    </fields>
+            </PaylineSHORTCUT>
+
+
+
+
             <PaylineNX type="group" translate="label">
               <label>Payline - Nx web payment</label>
-              <sort_order>204</sort_order>
+              <sort_order>215</sort_order>
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
               <show_in_store>1</show_in_store>
@@ -649,7 +698,7 @@
             </PaylineNX>
             <PaylineDIRECT type="group" translate="label">
                     <label>Payline - direct payment</label>
-                    <sort_order>205</sort_order>
+                    <sort_order>220</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -740,7 +789,7 @@
                     
                     <PaylineWALLET type="group" translate="label">
                         <label>Payline - wallet payment</label>
-                        <sort_order>206</sort_order>
+                        <sort_order>225</sort_order>
                         <show_in_default>1</show_in_default>
                         <show_in_website>1</show_in_website>
                         <show_in_store>1</show_in_store>
@@ -947,7 +996,7 @@
                                         <config_path>payment/PaylineWALLET/default_shipping_method</config_path>
                                         <label>Default shipping method</label>
                                         <comment>Shipping method to use with one click checkout. Flatrate, freeshipping and Tablerates are available</comment>
-                                        <source_model>payline/datasource_shippingmethods</source_model>
+                                        <source_model>payline/datasource_shipping_DefaultMethods</source_model>
                                         <frontend_type>select</frontend_type>
                                         <sort_order>40</sort_order>
                                         <show_in_default>1</show_in_default>

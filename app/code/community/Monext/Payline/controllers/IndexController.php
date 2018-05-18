@@ -735,19 +735,21 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
             if(!$order->getId()) {
                 $onePage = Mage::getSingleton('checkout/type_onepage');
                 $quote = $onePage->getQuote();
-                if($quote and $quote->getId() && $quote->getReservedOrderId()==$tokenData['order_id']) {
+                if($quote and $quote->getId() and $quote->getReservedOrderId()==$tokenData['order_id']) {
                     $data=array('method'=>'PaylineCPT', 'cc_type'=>$contractNumber);
                     $quote->getPayment()->importData($data);
 
                     $onePage->saveOrder();
+
                     $onePage->getQuote()->save();
 
+                    Mage::helper('payline/logger')->log('[cptReturnWidgetAction] order ' . $tokenData['order_id'] . ' created for quoteId:' . $quote->getId());
                     $parameters = array('paylinetoken'=>$paylineToken);
                     $this->_forward('cptReturn',NULL,NULL,$parameters);
                     return $this;
                 } else {
                     // Incorrect order_id
-                    throw new Exception('Incorrect quote_id or reserved_order_id '.$paylineToken);
+                    throw new Exception('Incorrect getReservedOrderId (' . $quote->getId() .') for tokenData order_id (' . $tokenData['order_id'] .') for quoteId:' . $quote->getId());
                 }
             } else {
                 // Order should not be created
@@ -834,13 +836,10 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
 
         			// save wallet if created during this payment
         			if(!empty($webPaymentDetails['privateDataList']) and !empty($webPaymentDetails['privateDataList']['privateData'])) {
-            			foreach ($webPaymentDetails['privateDataList']['privateData'] as $privateDataList){
-            				if($privateDataList->key == 'newWalletId'){
-            					if(isset($webPaymentDetails['wallet']) && $webPaymentDetails['wallet']['walletId'] == $privateDataList->value){ // Customer may have unchecked the "Save this information for my next orders" checkbox on payment page. If so, wallet is not created !
-            						$this->saveWallet($privateDataList->value);
-            					}
-            				}
-            			}
+                        $privateDataList = $webPaymentDetails['privateDataList']['privateData'];
+                        if (!empty($privateDataList['key']) and !empty($privateDataList['value']) and $privateDataList['key'] == 'newWalletId') {
+                            $this->saveWallet($privateDataList['value']);
+                        }
         			}
 
         			// create invoice if needed

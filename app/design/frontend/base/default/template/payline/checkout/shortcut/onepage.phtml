@@ -1,0 +1,328 @@
+<?php /* @var $this Monext_Payline_Block_Checkout_Onepage */?>
+<!--
+<span class="please-wait" id="final-review-please-wait">
+    <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Loading next step...') ?>" title="<?php echo $this->__('Loading next step...') ?>" class="v-middle" /> <?php echo $this->__('Loading next step...') ?>
+</span>
+-->
+
+<!--
+<div id='PaylineWidget'
+     data-token='<?php echo Mage::helper('payline/widget')->getDataTokenForShortcut() ?>'
+     data-template='shortcut'
+     data-event-didshowstate='showStateAddressPaymentFunction'>
+</div>
+-->
+
+<div class="overlay" id="shortcut-please-wait" style="display: none">
+    <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Loading next step...') ?>" title="<?php echo $this->__('Loading...') ?>" class="v-middle" /> <?php echo $this->__('Loading...') ?>
+</div>
+
+
+<style>
+
+    .paylineContainer {
+        margin-top: 5px;
+        padding: 0px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;border: 1px solid #bbb;
+        border-radius: 6px;
+        position: relative;
+    }
+
+    .paylineContainer.shipping-method  {
+        padding: 5px;
+    }
+
+    .paylineContainer .overlay {
+        display: none;
+        background-color: rgba(255, 255, 255, 0.85);
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    .paylineContainer .overlay img{
+        margin: auto;
+        padding-top: 20px;
+    }
+
+    .paylineContainer.disabled .overlay {
+        display: block;
+    }
+
+    .paylineContainer.disabled input{
+        display: none;
+    }
+</style>
+
+<script type="text/javascript">
+    //<![CDATA[
+
+    var Review = Class.create();
+    Review.prototype = {
+        initialize: function(saveUrl, successUrl, agreementsForm) {
+            this.saveUrl = saveUrl;
+            this.successUrl = successUrl;
+            this.agreementsForm = agreementsForm;
+            this.onSave = this.nextStep.bindAsEventListener(this);
+            this.onComplete = this.resetLoadWaiting.bindAsEventListener(this);
+            this.payline = true;
+        },
+
+        save: function(){
+            if (widgetShortcutWrapper.loadWaiting!=false) return;
+            widgetShortcutWrapper.setLoadWaiting(true);
+            widgetShortcutWrapper.shortcutPlaceOrder();
+
+            /*
+            if (checkout.loadWaiting!=false) return;
+            checkout.setLoadWaiting('review');
+            var params = Form.serialize(payment.form);
+            if (this.agreementsForm) {
+                params += '&'+Form.serialize(this.agreementsForm);
+            }
+            params.save = true;
+            new Ajax.Request(
+                this.saveUrl,
+                {
+                    method:'post',
+                    parameters:params,
+                    onComplete: this.onComplete,
+                    onSuccess: this.onSave,
+                    onFailure: checkout.ajaxFailure.bind(checkout)
+                }
+            );
+            */
+        },
+
+        resetLoadWaiting: function(transport){
+            checkout.setLoadWaiting(false, this.isSuccess);
+        },
+
+        nextStep: function(transport){
+
+            /*
+            if (transport) {
+                var response = transport.responseJSON || transport.responseText.evalJSON(true) || {};
+
+                if (response.redirect) {
+                    this.isSuccess = true;
+                    location.href = encodeURI(response.redirect);
+                    return;
+                }
+                if (response.success) {
+                    this.isSuccess = true;
+                    location.href = encodeURI(this.successUrl);
+                }
+                else{
+                    var msg = response.error_messages;
+                    if (Object.isArray(msg)) {
+                        msg = msg.join("\n").stripTags().toString();
+                    }
+                    if (msg) {
+                        alert(msg);
+                    }
+                }
+
+                if (response.update_section) {
+                    $('checkout-'+response.update_section.name+'-load').update(response.update_section.html);
+                }
+
+                if (response.goto_section) {
+                    checkout.gotoSection(response.goto_section, true);
+                }
+            }
+        */
+        },
+
+        isSuccess: false
+    };
+
+
+
+    var PaylineWidgetShortcutWrapper = Class.create();
+    PaylineWidgetShortcutWrapper.prototype = {
+        initialize: function(data_token, base_grand_total, update_url, shipping_url, place_url) {
+            this.dataToken = data_token;
+            this.baseGrandTotal = base_grand_total;
+            this.updateUrl = update_url;
+            this.shippingUrl = shipping_url;
+
+            this.placeUrl = place_url;
+            this.currentBuyerAddress = false;
+            this.finalBaseGrandTotal = base_grand_total;
+            this.loadWaiting = false;
+            this.overlay = $('shortcut-please-wait').clone(true);
+            this.overlay.removeAttribute('id');
+
+            if(!$("PaylineWidget")) {
+                $('payline-checkout-shortcut-load').insert({after: '<div id="PaylineWidget" data-token="' + this.dataToken + '" data-template="shortcut" data-event-didshowstate="showStateAddressPaymentFunction"></div>'});
+            }
+
+        },
+
+        shortcutSaveAddresses: function() {
+
+            var buyer = Payline.Api.getBuyerShortcut();
+
+            this.setLoadWaiting(true);
+
+            new Ajax.Request(
+                this.updateUrl,
+                {
+                    method: 'post',
+                    parameters: buyer,
+                    onComplete: function(transport){
+                        this.setLoadWaiting(false);
+                    }.bind(this),
+                    onSuccess: function(transport) {
+                        var response = transport.responseJSON || transport.responseText.evalJSON(true) || {};
+                        if (response.update_section) {
+                            $('payline-'+response.update_section.name+'-load').update(response.update_section.html);
+                        }
+
+                    },
+                    onFailure: function(transport) {
+                        console.log(transport.responseJSON, 'failure')
+                    }
+                }
+            );
+        },
+
+        shortcutSaveShippingMethod: function(elem)
+        {
+            this.setLoadWaiting(true);
+
+            new Ajax.Request(
+                this.shippingUrl,
+                {
+                    method: 'post',
+                    parameters: {'shipping_method':elem.value},
+                    onComplete: function(transport){
+                        this.setLoadWaiting(false);
+                    }.bind(this),
+                    onSuccess: function(transport) {
+                        var response = transport.responseJSON || transport.responseText.evalJSON(true) || {};
+
+                        if (response.update_section) {
+                            $('payline-'+response.update_section.name+'-load').update(response.update_section.html);
+                            this.finalBaseGrandTotal = response.base_grand_total;
+                        }
+
+                    }.bind(this),
+                    onFailure: function(transport) {
+                        console.log(transport.responseJSON, 'failure')
+                    }
+                }
+            );
+        },
+
+        shortcutPlaceOrder: function()
+        {
+            console.log('shortcutPlaceOrder');
+            this.setLoadWaiting(true);
+            if(this.finalBaseGrandTotal != this.baseGrandTotal) {
+
+                var totalAmount= Math.round(String(this.finalBaseGrandTotal*100));
+                var datasPayline = {"payment":{"amount":totalAmount},"order":{"amount":totalAmount}};
+
+                console.log(datasPayline, 'before updateWebpaymentData');
+
+                Payline.Api.updateWebpaymentData(Payline.Api.getToken(), datasPayline,function () {
+                    console.log(datasPayline, 'updateWebpaymentData and finalize');
+                    Payline.Api.finalizeShortcut();
+                });
+            } else {
+                console.log(datasPayline, 'finalize');
+                Payline.Api.finalizeShortcut();
+            }
+
+
+        },
+
+
+        setLoadWaiting: function(keepDisabled) {
+
+            var containers = $$('.paylineContainer');
+            containers.each(function(elem){
+                if(!elem.select('.overlay').length) {
+                    elem.insert({top: this.overlay.show().clone(true)});
+                }
+            }.bind(this));
+
+
+            this.loadWaiting = (keepDisabled ? true : false);
+            if (this.loadWaiting) {
+                containers.invoke('addClassName', 'disabled');
+            } else {
+                containers.invoke('removeClassName', 'disabled');
+            }
+        }
+    };
+
+
+    showStateAddressPaymentFunction = function(state) {
+        console.log(state);
+
+        if ("PAYMENT_METHODS_LIST_SHORTCUT" == state.state) {
+            // specific process if needed
+        }
+
+        if ("PAYMENT_TRANSITIONAL_SHORTCUT" == state.state) {
+
+            $('pl-tShortcut-pay-btn-container').hide();
+
+            $('payline-shipping-method-load').show();
+            $('payline-review-load').show();
+
+            //Recupération des informations
+            widgetShortcutWrapper.shortcutSaveAddresses();
+        }
+
+        if ("PAYMENT_SUCCESS" == state.state) {
+            // redirection vers la page de success
+        }
+
+        if ("TOKEN_EXPIRED" == state.state) {
+            // redirection vers la page de success
+        }
+
+
+    };
+
+    //]]>
+</script>
+
+
+<div id="payline-checkout-shortcut-load">
+    <!-- Content insert with javascript -->
+</div>
+
+<div id="payline-shipping-method-load" class="paylineContainer shipping-method" style="display: none"
+    <!-- Content loaded dynamically -->
+    <?php echo $this->getChildHtml('payline-shortcut.shipping-method'); ?>
+</div>
+
+<div id="payline-review-load" class="paylineContainer order-review" style="display: none">
+    <!-- Content loaded dynamically -->
+    <?php echo $this->getChildHtml('payline-shortcut.review-info'); ?>
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+var widgetShortcutWrapper = new PaylineWidgetShortcutWrapper('<?php echo Mage::helper('payline/widget')->getDataToken() ?>',
+    0,
+    '<?php echo $this->getUrl('payline/shortcut/saveAddresses') ?>',
+    '<?php echo $this->getUrl('payline/shortcut/saveShippingMethod') ?>',
+    '<?php echo $this->getUrl('payline/shortcut/place') ?>'
+
+
+);
+
+
+//]]>
+</script>
+

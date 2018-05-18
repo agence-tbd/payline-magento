@@ -436,7 +436,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
     public function updateOrder($order, $res, $transactionId, $paymentType = 'CPT')
     {
         // First, log message which says that we are updating the order
-        Mage::helper('payline/logger')->log("[updateOrder] Mise à jour commande " . $order->getIncrementId() . " (mode $paymentType) avec la transaction $transactionId");
+        Mage::helper('payline/logger')->log("[updateOrder] " . $order->getIncrementId() . " (mode $paymentType) with transaction $transactionId");
 
         // By default this process isn't OK
         $orderOk = false;
@@ -494,12 +494,13 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
                 $orderTotal = round($order->getBaseGrandTotal() * 100);
                 $orderRef = $order->getRealOrderId();
                 $orderCurrency = Mage::helper('payline')->getNumericCurrencyCode($order->getBaseCurrencyCode());
+
                 if($orderTotal != $res['payment']['amount']){
-                    Mage::helper('payline/logger')->log("ERROR for order $orderRef - paid amount (".$res['payment']['amount'].") does not match order amount ($orderTotal)");
+                    Mage::helper('payline/logger')->log("[updateOrder] ERROR for order $orderRef - paid amount (".$res['payment']['amount'].") does not match order amount ($orderTotal)");
                     $orderOk = false;
                 }
                 if($orderCurrency != $res['payment']['currency']){
-                    Mage::helper('payline/logger')->log("ERROR for order $orderRef - payment currency (".$res['payment']['currency'].") does not match order amount ($orderCurrency)");
+                    Mage::helper('payline/logger')->log("[updateOrder] ERROR for order $orderRef - payment currency (".$res['payment']['currency'].") does not match order amount ($orderCurrency)");
                     $orderOk = false;
                 }
                 
