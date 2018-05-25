@@ -10,3 +10,4 @@ app/design/adminhtml/default/default/layout/payline.xml   app/design/adminhtml/d
 skin/frontend/base/default/images/monext   skin/frontend/base/default/images/monext
 skin/frontend/base/default/css/payline.css   skin/frontend/base/default/css/payline.css
 skin/frontend/base/default/js/payline.js   skin/frontend/base/default/js/payline.js
+skin/adminhtml/default/default/payline.css   skin/adminhtml/default/default/payline.css

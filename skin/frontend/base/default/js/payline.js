@@ -274,6 +274,203 @@ PaylineWidgetWrapper.prototype = {
 }
 
 
+var PaylineWidgetShortcutWrapper = Class.create();
+PaylineWidgetShortcutWrapper.prototype = {
+    initialize: function(data_token, address_url, shipping_url, place_url) {
+        this.dataToken = data_token;
+
+        this.addressUrl = address_url;
+        this.shippingUrl = shipping_url;
+        this.placeUrl = place_url;
+        this.successUrl = false;
+        this.currentBuyerAddress = false;
+
+        this.finalBaseGrandTotal = 0;
+        this.loadWaiting = false;
+
+        this.selectorAgreementsForm = 'checkout-agreements';
+        this.selectorShippingMethods = 'input[name="shipping_method"][id^="s_method_"]';
+
+        this.overlay = $('shortcut-please-wait').clone(true);
+        this.overlay.removeAttribute('id');
+
+        this.buyerString = '';
+
+        if(!$("PaylineWidget")) {
+            $('payline-checkout-shortcut-load').insert({after: '<div id="PaylineWidget" data-token="' + this.dataToken + '" data-template="shortcut" data-event-didshowstate="showStateAddressPaymentFunction"></div>'});
+        }
+
+        this.onFailure = this.failureCallback.bindAsEventListener(this);
+        this.onSaveAddress = this.successSaveAddress.bindAsEventListener(this);
+        this.onSaveShippingMethod = this.successSaveShippingMethod.bindAsEventListener(this);
+        this.onPlaceOrder = this.successPlaceOrder.bindAsEventListener(this);
+    },
+
+    failureCallback: function(transport) {
+        console.log(transport.responseJSON, 'failure');
+        this.setLoadWaiting(false);
+    },
+
+    shortcutSaveAddresses: function(event)
+    {
+        //console.log(event, 'shortcutSaveAddresses');
+
+        this.setLoadWaiting(true);
+
+        var buyer = Payline.Api.getBuyerShortcut();
+        if(this.buyerString ==  JSON.stringify(buyer)) {
+           return ;
+        }
+        this.buyerString =  JSON.stringify(buyer);
+
+        new Ajax.Request(
+            this.addressUrl,
+            {
+                method: 'post',
+                parameters: buyer,
+                onComplete: function(transport){
+                    this.setLoadWaiting(false);
+                }.bind(this),
+                onSuccess: this.onSaveAddress,
+                onFailure: this.onFailure
+            }
+        );
+    },
+
+    getShippingMethods: function()
+    {
+        return $$(this.selectorShippingMethods);
+    },
+
+    successSaveAddress: function(transport) {
+        var response = transport.responseJSON || transport.responseText.evalJSON(true) || {};
+        if (response.update_section) {
+            $('payline-'+response.update_section.name+'-load').update(response.update_section.html);
+
+            if(this.getShippingMethods().length==1) {
+                this.shortcutSaveShippingMethod();
+            } else {
+
+                this.getShippingMethods().each(function(element){
+                    Event.observe(element, 'click', this.shortcutSaveShippingMethod.bindAsEventListener(this));
+                }.bind(this));
+
+            }
+        }
+
+    },
+
+    shortcutSaveShippingMethod: function(event)
+    {
+        //console.log(event, 'shortcutSaveShippingMethod');
+
+        var element = this.getShippingMethods().first()
+        if ('undefined' != typeof event) {
+            element = Event.element(event);
+        }
+
+        this.setLoadWaiting(true);
+
+        new Ajax.Request(
+            this.shippingUrl,
+            {
+                method: 'post',
+                parameters: {'shipping_method':element.value},
+                onComplete: function(transport){
+                    this.setLoadWaiting(false);
+                }.bind(this),
+                onSuccess: this.onSaveShippingMethod,
+                onFailure: this.onFailure
+            }
+        );
+    },
+
+    successSaveShippingMethod: function(transport) {
+        var response = transport.responseJSON || transport.responseText.evalJSON(true) || {};
+
+        if (response.update_section) {
+            $('payline-'+response.update_section.name+'-load').update(response.update_section.html);
+
+            this.finalBaseGrandTotal = response.base_grand_total;
+        }
+
+    },
+
+    shortcutPlaceOrder: function(event)
+    {
+        //console.log(event, 'shortcutPlaceOrder');
+
+
+        this.setLoadWaiting(true);
+
+        var params = '';
+        if ($(this.selectorAgreementsForm)) {
+            params = Form.serialize($(this.selectorAgreementsForm));
+        }
+        params.save = true;
+
+        new Ajax.Request(
+            this.placeUrl,
+            {
+                method: 'post',
+                parameters: params,
+                onComplete: function(transport){
+                    //this.setLoadWaiting(false);
+                }.bind(this),
+                onSuccess: this.onPlaceOrder,
+                onFailure: this.onFailure
+            }
+        );
+    },
+
+
+    successPlaceOrder: function(transport) {
+
+        var response = transport.responseJSON || transport.responseText.evalJSON(true) || {};
+
+        if (response.error) {
+            alert(response.error_messages.stripTags().toString());
+            this.setLoadWaiting(false);
+        }
+
+        if (response.success) {
+
+            if(this.finalBaseGrandTotal) {
+                var totalAmount= Math.round(String(this.finalBaseGrandTotal*100));
+                var datasPayline = {"payment":{"amount":totalAmount},"order":{"amount":totalAmount}};
+
+                Payline.Api.updateWebpaymentData(Payline.Api.getToken(), datasPayline,function () {
+                    Payline.Api.finalizeShortcut();
+                });
+            } else {
+                Payline.Api.finalizeShortcut();
+            }
+
+            if (response.redirect) {
+                this.successUrl = response.redirect;
+            }
+        }
+    },
+
+
+    setLoadWaiting: function(keepDisabled) {
+
+        var containers = $$('.paylineContainer');
+        containers.each(function(elem){
+            if(!elem.select('.overlay').length) {
+                elem.insert({top: this.overlay.show().clone(true)});
+            }
+        }.bind(this));
+
+        this.loadWaiting = (keepDisabled ? true : false);
+        if (this.loadWaiting) {
+            containers.invoke('addClassName', 'disabled');
+        } else {
+            containers.invoke('removeClassName', 'disabled');
+        }
+    }
+};
+
 var PaylineDirectMethod = Class.create();
 PaylineDirectMethod.prototype = {
     initialize: function(code, tokenUrl,cryptedKeys,accessKeyRef,tokenReturnURL){

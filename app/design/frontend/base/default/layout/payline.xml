@@ -67,10 +67,10 @@
 
         <reference name="checkout.cart.methods">
             <block type="payline/wallet_checkoutbtn" after="checkout.cart.methods.onepage" name="payline-wallet.checkoutbtn" ifconfig="payment/PaylineWALLET/active"/>
+            <block type="payline/checkout_widget_shortcut_button" after="checkout.cart.methods.onepage" name="payline-shortcut.button" template="payline/checkout/shortcut/button.phtml"  ifconfig="payline/PaylineSHORTCUT/active" />
         </reference>
         <reference name="checkout.cart.top_methods">
             <block type="payline/wallet_checkoutbtn" after="checkout.cart.methods.onepage" name="payline-wallet.checkoutbtn" ifconfig="payment/PaylineWALLET/active"/>
-            <block type="payline/checkout_widget_shortcut_button" after="checkout.cart.methods.onepage" name="payline-shortcut.button" template="payline/checkout/shortcut/button.phtml"  ifconfig="payline/PaylineSHORTCUT/active" />
         </reference>
     </checkout_cart_index>
     
@@ -213,6 +213,10 @@
         </reference>
     </payline_onepage_review_handler>
 
+    <payline_shortcut_review_hide_handler>
+        <remove name="payline-shortcut.review-info"/>
+    </payline_shortcut_review_hide_handler>
+
 
     <payline_shortcut_index translate="label">
         <label>Shortcut One Page Checkout</label>
@@ -229,7 +233,6 @@
 
         <reference name="content">
             <block type="payline/checkout_widget_shortcut_onepage" name="payline-shortcut.button" template="payline/checkout/shortcut/onepage.phtml">
-                <block type="payline/checkout_widget_shortcut_shipping" name="payline-shortcut.shipping-method" template="payline/checkout/shortcut/shipping.phtml"/>
                 <block type="checkout/onepage_review_info" name="payline-shortcut.review-info" template="checkout/onepage/review/info.phtml">
                     <action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>checkout/onepage/review/item.phtml</template></action>
                     <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>checkout/onepage/review/item.phtml</template></action>
@@ -254,7 +257,9 @@
         <remove name="right"/>
         <remove name="left"/>
 
-        <block type="payline/checkout_widget_shortcut_shipping" name="root" output="toHtml" template="payline/checkout/shortcut/shipping.phtml"/>
+        <block type="payline/checkout_widget_shortcut_shipping_available" name="root" output="toHtml" template="payline/checkout/shortcut/shipping/available.phtml">
+            <block type="payline/checkout_widget_shortcut_shipping_additional" name="payline-shortcut.shipping_method.additional" template="payline/checkout/shortcut/shipping/additional.phtml"/>
+        </block>
     </payline_shortcut_shippingmethod>
 
 

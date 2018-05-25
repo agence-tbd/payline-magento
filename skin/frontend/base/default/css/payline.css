@@ -140,5 +140,44 @@ table.payline-payment td {
     float: none;
 }
 
+/* Widget Shortcut */
+
+.paylineContainer {
+    min-height: 100px;
+    margin-top: 5px;
+    padding: 0px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;border: 1px solid #bbb;
+    border-radius: 6px;
+    position: relative;
+}
+
+.paylineContainer.shipping-method  {
+    padding: 5px;
+}
+
+.paylineContainer .overlay {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.85);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.paylineContainer .overlay img{
+    margin: auto;
+    padding-top: 20px;
+}
+
+.paylineContainer.disabled .overlay {
+    display: block;
+}
+
+.paylineContainer.disabled input{
+    display: none;
+}
+
 
 

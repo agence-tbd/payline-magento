@@ -17,18 +17,11 @@
                    <?php else: ?>
                         <?php if ($_sole) : ?>
                            <?php $soleId = 's_method_' . $_rate->getCode(); ?>
-
                             <span class="no-display"><input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="<?php echo $soleId; ?>" checked="checked" /></span>
-                           <script type="text/javascript">
-                               //<![CDATA[
-                               widgetShortcutWrapper.shortcutSaveShippingMethod($('<?php echo $soleId; ?>'));
-                               //]]>
-                           </script>
                         <?php else: ?>
                             <input name="shipping_method"
                                    type="radio"
                                    value="<?php echo $_rate->getCode() ?>"
-                                   onclick="widgetShortcutWrapper.shortcutSaveShippingMethod(this)"
                                    id="s_method_<?php echo $_rate->getCode() ?>"
                                 <?php if($_rate->getCode()===$this->getAddressShippingMethod()) echo ' checked="checked"' ?>
                                    class="radio"/>

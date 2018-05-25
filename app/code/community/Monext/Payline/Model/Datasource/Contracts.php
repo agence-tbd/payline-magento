@@ -1,6 +1,8 @@
 <?php
 class Monext_Payline_Model_Datasource_Contracts
 {
+    protected $_options;
+
     public function toOptionArray()
     {
         if ($this->_options === null) {

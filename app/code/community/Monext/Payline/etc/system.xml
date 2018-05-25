@@ -505,16 +505,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </active>
-                        <exclude_shipping_method translate="label comment">
-                            <label>Exclude shipping method</label>
-                            <comment>Shipping method to not use with shortcut.</comment>
+                        <shipping_method_allowed translate="label comment">
+                            <label>Allowed shipping method</label>
+                            <comment>Shipping method to use with shortcut.</comment>
                             <source_model>payline/datasource_Shipping_AllMethods</source_model>
                             <frontend_type>multiselect</frontend_type>
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </exclude_shipping_method>
+                        </shipping_method_allowed>
                         <use_contracts translate="label comment">
                             <label>Select contract used</label>
                             <source_model>payline/datasource_contracts</source_model>
@@ -524,6 +524,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </use_contracts>
+                        <checkout_method translate="label comment">
+                            <label>Checkout method</label>
+                            <source_model>payline/datasource_checkout_method</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </checkout_method>
                     </fields>
             </PaylineSHORTCUT>
 
