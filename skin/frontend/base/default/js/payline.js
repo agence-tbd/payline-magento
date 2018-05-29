@@ -313,12 +313,11 @@ PaylineWidgetShortcutWrapper.prototype = {
 
     shortcutSaveAddresses: function(event)
     {
-        //console.log(event, 'shortcutSaveAddresses');
-
         this.setLoadWaiting(true);
 
         var buyer = Payline.Api.getBuyerShortcut();
         if(this.buyerString ==  JSON.stringify(buyer)) {
+           this.setLoadWaiting(false);
            return ;
         }
         this.buyerString =  JSON.stringify(buyer);
@@ -362,8 +361,6 @@ PaylineWidgetShortcutWrapper.prototype = {
 
     shortcutSaveShippingMethod: function(event)
     {
-        //console.log(event, 'shortcutSaveShippingMethod');
-
         var element = this.getShippingMethods().first()
         if ('undefined' != typeof event) {
             element = Event.element(event);
@@ -398,9 +395,6 @@ PaylineWidgetShortcutWrapper.prototype = {
 
     shortcutPlaceOrder: function(event)
     {
-        //console.log(event, 'shortcutPlaceOrder');
-
-
         this.setLoadWaiting(true);
 
         var params = '';

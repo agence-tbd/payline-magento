@@ -20,7 +20,7 @@ Review.prototype = {
 };
 
 showStateAddressPaymentFunction = function(state) {
-    console.log(state);
+    var redirectDefaultUrl = encodeURI('<?php echo $this->getUrl('checkout/cart') ?>');
 
     if ("PAYMENT_METHODS_LIST_SHORTCUT" == state.state) {
         // specific process if needed
@@ -46,12 +46,14 @@ showStateAddressPaymentFunction = function(state) {
 
     if ("PAYMENT_SUCCESS" == state.state) {
         if(widgetShortcutWrapper.successUrl) {
-            location.href = encodeURI(widgetShortcutWrapper.successUrl);
+            redirectDefaultUrl = encodeURI(widgetShortcutWrapper.successUrl);
         }
+
+        location.href = encodeURI(redirectDefaultUrl);
     }
 
     if ("TOKEN_EXPIRED" == state.state) {
-        location.href = encodeURI('<?php echo $this->getUrl('checkout/cart') ?>');
+        location.href = encodeURI(redirectDefaultUrl);
     }
 
 };
@@ -85,7 +87,7 @@ showStateAddressPaymentFunction = function(state) {
 <script type="text/javascript">
 //<![CDATA[
 
-var widgetShortcutWrapper = new PaylineWidgetShortcutWrapper('<?php echo Mage::helper('payline/widget')->getDataTokenForShortcut(false) ?>',
+var widgetShortcutWrapper = new PaylineWidgetShortcutWrapper('<?php echo Mage::helper('payline/widget')->getDataTokenForShortcut() ?>',
     '<?php echo $this->getUrl('payline/shortcut/saveAddresses', array('form_key' => Mage::getSingleton('core/session')->getFormKey())) ?>',
     '<?php echo $this->getUrl('payline/shortcut/saveShippingMethod', array('form_key' => Mage::getSingleton('core/session')->getFormKey())) ?>',
     '<?php echo $this->getUrl('payline/shortcut/saveOrder', array('form_key' => Mage::getSingleton('core/session')->getFormKey())) ?>'

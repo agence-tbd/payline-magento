@@ -482,7 +482,7 @@
                       </fields>
             </PaylineCPT>
 
-            <PaylineSHORTCUT type="group" translate="label">
+            <PaylineSHORTCUT type="group" translate="label comment"  module="payline">
                     <label>Payline - Shortcut</label>
                     <sort_order>210</sort_order>
                     <show_in_default>1</show_in_default>
@@ -493,7 +493,7 @@
                     <activity_path>payline/PaylineSHORTCUT/active</activity_path>
                     <frontend_type>text</frontend_type>
                     <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
-                    <comment>Select payments in your shopping cart. Payline will process your card payments through the Payline Gateway.</comment>
+                    <comment>Select payment button shortcut directly in your shopping cart.</comment>
                     <fields>
                         <active translate="label">
                             <!--<config_path>payment/PaylineCPT/active</config_path>-->

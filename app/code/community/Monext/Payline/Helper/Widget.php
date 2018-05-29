@@ -19,10 +19,10 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
         return $quote->getReservedOrderId();
     }
 
-    public function getDataTokenForShortcut($cart=true)
+    public function getDataTokenForShortcut($keepSessionToken=false)
     {
         $checkoutSession = Mage::getSingleton('checkout/session');
-        if($cart and $checkoutSession->getPaylineDataToken()) {
+        if($keepSessionToken and $checkoutSession->getPaylineDataToken()) {
             $webPaymentDetails = Mage::helper('payline')->initPayline('CPT')->getWebPaymentDetails(array('token' => $checkoutSession->getPaylineDataToken(), 'version' => Monext_Payline_Helper_Data::VERSION));
 
             if(isset($webPaymentDetails) and !empty($webPaymentDetails['result'])) {
@@ -32,10 +32,10 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
             } else {
                 $checkoutSession->unsPaylineDataToken();
             }
-        }
 
-        if($checkoutSession->getPaylineDataToken()) {
-            return $checkoutSession->getPaylineDataToken();
+            if($checkoutSession->getPaylineDataToken()) {
+                return $checkoutSession->getPaylineDataToken();
+            }
         }
 
         $token = $this->getDataToken(true);
@@ -70,8 +70,9 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
                     $returnUrl = Mage::getUrl('payline/index/cptWidgetShortcut');
                     $array['payment']['contractNumber'] = $this->getContractNumberForWidgetShortcut();
                     $array['contracts'] = array($array['payment']['contractNumber']);
-                    $array['secondContracts'] = array('');
+//                    $array['secondContracts'] = array('');
                 }
+
 
                 $paylineSDK = $this->initPayline('CPT', $array['payment']['currency']);
                 $paylineSDK->returnURL          = $returnUrl;
