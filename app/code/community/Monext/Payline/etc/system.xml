@@ -493,9 +493,9 @@
                     <activity_path>payline/PaylineSHORTCUT/active</activity_path>
                     <frontend_type>text</frontend_type>
                     <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
-                    <comment>Select payment button shortcut directly in your shopping cart.</comment>
+                    <comment>Use payment button shortcut directly in your shopping cart.</comment>
                     <fields>
-                        <active translate="label">
+                        <active>
                             <!--<config_path>payment/PaylineCPT/active</config_path>-->
                             <label>Enabled</label>
                             <frontend_type>select</frontend_type>
@@ -505,7 +505,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </active>
-                        <shipping_method_allowed translate="label comment">
+                        <shipping_method_allowed>
                             <label>Allowed shipping method</label>
                             <comment>Shipping method to use with shortcut.</comment>
                             <source_model>payline/datasource_Shipping_AllMethods</source_model>
