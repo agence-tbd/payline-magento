@@ -28,25 +28,12 @@ function paylineTrySkipPaymentMethod() {
 
 var PaylineWidgetWrapper = Class.create();
 PaylineWidgetWrapper.prototype = {
-    initialize: function(data_token, data_template, save_url, custom_methods, init_quote_total, currency_code, payment_template) {
+    initialize: function(data_token, data_template, save_url, custom_methods, init_quote_total, currency_code, payment_template, data_events) {
         this.dataToken = data_token;
         this.dataTemplate = data_template;
         this.saveUrl = save_url;
         this.paymentTemplate = payment_template;
-
-        /*switch(this.dataTemplate) {
-            case 'lightbox':
-                this.rootTabSelector = 'pmLayout-column-pmContainer-mycustompm';
-                break;
-            case 'tab':
-                this.rootTabSelector = 'pmLayout-tab-tab_mycustompm';
-                break;
-            case 'column':
-                this.rootTabSelector = 'pmLayout-column-pmLogo-mycustompm';
-                break;
-            default:
-                this.rootTabSelector = false;
-        }*/
+        this.dataEvents = data_events;
 
         this.rootTabSelector = 'pmLayout-.*-mycustompm';
 
@@ -54,8 +41,6 @@ PaylineWidgetWrapper.prototype = {
         this.currencyCode = currency_code;
         this.finalQuoteGrandTotal = 0;
         this.finalPaymentMethods = {};
-        this.observer = false;
-
         this.customPmMethods = [];
         this.allPaymentMethods = {};
 
@@ -76,6 +61,27 @@ PaylineWidgetWrapper.prototype = {
     setFinalPaymentMethods: function(methods)
     {
         this.finalPaymentMethods = methods;
+    },
+
+    insertWidget: function($widgetAnchor){
+
+        if($widgetAnchor && !$("PaylineWidget")) {
+
+            var widgetAttributes = {"id":"PaylineWidget", "data-auto-init":"false", "class":"pl-custom"};
+            $H(this.dataEvents).each(function(pair){
+                widgetAttributes[pair.key] = pair.value;
+            });
+
+            var $divPaylineWidget = new Element('div', widgetAttributes);
+
+            $widgetAnchor.insert({after: $divPaylineWidget});
+
+            Payline.Api.init(this.dataToken, this.dataTemplate);
+
+            this.widgetInitialized = true;
+
+            this.insertBeforeHtml();
+        }
     },
 
     initPayline: function(noAgreement){
@@ -106,60 +112,8 @@ PaylineWidgetWrapper.prototype = {
                 $('checkout-review-table-wrapper').hide();
             }
 
-
-            if(!$("PaylineWidget")) {
-
-                $checkoutReview.insert({after: '<div id="PaylineWidget" data-auto-init="false" data-custompm="customPmHandler" data-event-didshowstate="didShowStateHandler" class="pl-custom"></div>'});
-
-                Payline.Api.init(this.dataToken, this.dataTemplate);
-
-                this.widgetInitialized = true;
-
-                this.insertBeforeHtml();
-
-                /*
-                if(noAgreement) {
-                    // Need a MutationObserver to check widget state ... too bad
-                    this.observer = new MutationObserver(function(mutations) {
-                        mutations.forEach(function(mutation) {
-
-                            var re = new RegExp('pl-pmLayout-.*-mycustompm'+'(\\w+)',"ig");
-                            var result = re.exec(mutation.target.id);
-
-                            var callshowWidget = false;
-                            //if(result && mutation.addedNodes.length>0) {
-                            if(result) {
-                                callshowWidget = true;
-                                this.allPaymentMethods[result[1]].checked = true;
-                            }
-
-                            if(callshowWidget) {
-                                $H(this.allPaymentMethods).each(function(pair) {
-                                    if(!pair.value.checked) {
-                                        callshowWidget = false;
-                                    }
-                                });
-
-                                if(callshowWidget) {
-                                    this.showWidget(true);
-                                }
-                            }
-                        }.bind(this));
-                    }.bind(this));
-
-
-                    // configuration of the observer:
-                    var config = { attributes: true, subtree:true, childList: true};
-
-                    // pass in the target node, as well as the observer options
-                    this.observer.observe($("PaylineWidget"), config);
-
-
-
-                }
-                /* */
-            }
-
+            this.insertWidget($checkoutReview);
+            
             if(!this.widgetReady) {
                 Payline.Api.hide();
             }
@@ -176,7 +130,7 @@ PaylineWidgetWrapper.prototype = {
 
     },
 
-    showWidget: function(observer){
+    showWidget: function(){
         if(this.widgetInitialized) {
 
             $reviewContainer = $('review-buttons-container');
@@ -188,16 +142,7 @@ PaylineWidgetWrapper.prototype = {
                 elem.style.display = '';
             });
 
-            if(observer) {
-                if(this.observer) {
-                    // Stop observing
-                    this.observer.disconnect();
-                }
-            } else {
-                Payline.Api.show();
-            }
-
-            this.setPmMethodTabs();
+            Payline.Api.show();
 
             if(!this.widgetReady) {
                 this.insertAfterHtml();
@@ -211,10 +156,12 @@ PaylineWidgetWrapper.prototype = {
 
     setPmMethodTabs: function()
     {
-        $$('div[id*="pmLayout-"][class*="pl-card"]').each(function(divTab){
+        $$('div[id*="pmLayout-"][class*="pl-card"]').each(function(divTab) {
+
             var re = new RegExp(this.rootTabSelector+'(\\w+)',"ig");
             var result = re.exec(divTab.id);
             var tabSpan = divTab.select('span.pl-card-logo').first();
+
             if (tabSpan && result) {
                 tabSpan.setAttribute('style', 'background:none; width:auto !important');
 
@@ -234,9 +181,12 @@ PaylineWidgetWrapper.prototype = {
 
 
         }.bind(this));
+
+        $$('[id^="payment_form_"]').invoke('show');
     },
 
-    preparePmMethods: function(custom_methods) {
+    preparePmMethods: function(custom_methods)
+    {
         custom_methods.each(function(payment){
             this.allPaymentMethods[payment.code] = {title:payment.title, checked:false, code:payment.code};
             this.customPmMethods.push({"paymentMethodId":("myCustomPm"+payment.code),
@@ -250,7 +200,8 @@ PaylineWidgetWrapper.prototype = {
         return this.customPmMethods;
     },
 
-    saveCustomPayment: function(method) {
+    saveCustomPayment: function(method)
+    {
         if (checkout.loadWaiting!=false) return;
 
         var params = 'paymentmethod='+method;
@@ -355,8 +306,9 @@ PaylineWidgetShortcutWrapper.prototype = {
                 }.bind(this));
 
             }
+        } else {
+            this.logError(response);
         }
-
     },
 
     shortcutSaveShippingMethod: function(event)
@@ -389,6 +341,8 @@ PaylineWidgetShortcutWrapper.prototype = {
             $('payline-'+response.update_section.name+'-load').update(response.update_section.html);
 
             this.finalBaseGrandTotal = response.base_grand_total;
+        } else {
+            this.logError(response);
         }
 
     },
@@ -443,9 +397,16 @@ PaylineWidgetShortcutWrapper.prototype = {
             if (response.redirect) {
                 this.successUrl = response.redirect;
             }
+        } else {
+            this.logError(response);
         }
     },
 
+    logError: function(response) {
+        if (response.error !== "undefined" && response.message !== "undefined" && Object.isString(response.message)) {
+            alert(response.message.stripTags().toString());
+        }
+    },
 
     setLoadWaiting: function(keepDisabled) {
 

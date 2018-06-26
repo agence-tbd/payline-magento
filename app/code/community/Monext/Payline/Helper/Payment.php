@@ -461,6 +461,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
 
                 // This process is not OK
                 $orderOk = true;
+                $orderErrorMsg = '';
 
                 // N time payment?
                 if ($paymentType == 'NX') {
@@ -471,7 +472,8 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
                             Mage::helper('payline/logger')->log("[updateOrder] première échéance paiement NX OK");
                             $orderOk = true;
                         } else {
-                            Mage::helper('payline/logger')->log("[updateOrder] première échéance paiement NX refusée, code " . $code_echeance);
+                            $orderErrorMsg = "[updateOrder] première échéance paiement NX refusée, code " . $code_echeance;
+                            Mage::helper('payline/logger')->log($orderErrorMsg);
                             $orderOk = false;
                         }
                     } else {
@@ -496,12 +498,23 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
                 $orderCurrency = Mage::helper('payline')->getNumericCurrencyCode($order->getBaseCurrencyCode());
 
                 if($orderTotal != $res['payment']['amount']){
-                    Mage::helper('payline/logger')->log("[updateOrder] ERROR for order $orderRef - paid amount (".$res['payment']['amount'].") does not match order amount ($orderTotal)");
+                    $orderErrorMsg = "[updateOrder] ERROR for order $orderRef - paid amount (".$res['payment']['amount'].") does not match order amount ($orderTotal)";
+                    Mage::helper('payline/logger')->log($orderErrorMsg);
                     $orderOk = false;
                 }
                 if($orderCurrency != $res['payment']['currency']){
-                    Mage::helper('payline/logger')->log("[updateOrder] ERROR for order $orderRef - payment currency (".$res['payment']['currency'].") does not match order amount ($orderCurrency)");
+                    $orderErrorMsg = "[updateOrder] ERROR for order $orderRef - payment currency (".$res['payment']['currency'].") does not match order amount ($orderCurrency)";
+                    Mage::helper('payline/logger')->log($orderErrorMsg);
                     $orderOk = false;
+                }
+
+
+                if(!$orderOk) {
+                    if(!$orderErrorMsg) {
+                        $orderErrorMsg = "Unknown error in updateOrder for transaction: " . $transactionId;
+                    }
+
+                    Mage::helper('payline')->initPayline('CPT')->doReset(array('transactionID' => $transactionId, 'comment' => $orderErrorMsg));
                 }
                 
                 // Save the order

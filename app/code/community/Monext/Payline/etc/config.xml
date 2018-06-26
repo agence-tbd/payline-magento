@@ -317,5 +317,12 @@
                 <payline_payment_action>101</payline_payment_action>
             </PaylineWALLET>
         </payment>
+        <payline>
+            <PaylineSHORTCUT>
+                <default_address_value>
+                    <!-- Default required attribute address value -->
+                </default_address_value>
+            </PaylineSHORTCUT>
+        </payline>
     </default>
 </config>

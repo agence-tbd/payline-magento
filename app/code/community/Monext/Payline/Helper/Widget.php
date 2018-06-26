@@ -177,19 +177,25 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
             throw new Exception('LastName from amazon cannot be empty');
         }
 
+
         $shipping = $billing = array('save_in_address_book'=>0);
 
         $commonParams = array('firstName'=>'firstname', 'lastName'=>'lastname', 'email'=>'email');
-
-        $baseParams = array('cityName'=>'city', 'zipCode'=>'postcode', 'country'=>'country_id', 'telephone'=>'telephone');
-
         foreach ($commonParams as $paylineKey=>$mageKey) {
             $shipping[$mageKey] =  $billing[$mageKey] =  $request->getParam($paylineKey);
         }
 
+        $baseParams = array('cityName'=>'city', 'zipCode'=>'postcode', 'country'=>'country_id', 'phone'=>'telephone');
         foreach ($baseParams as $paylineKey=>$mageKey) {
             $shipping[$mageKey] =  $request->getParam($paylineKey);
             $billing[$mageKey] =  $request->getParam('billing'.uc_words($paylineKey));
+        }
+
+        $configParams = array('prefix', 'middlename', 'suffix', 'dob', 'taxvat', 'gender');
+        foreach ($configParams as $configKey) {
+            if(Mage::helper('customer/address')->getConfig($configKey .'_show') == 'req') {
+                $shipping[$configKey] = $billing[$configKey] = $this->getDefaultAttributeValue($configKey, '-');
+            }
         }
 
         $billing = $this->_amazonFormatFullName($billing);
@@ -201,18 +207,16 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
             $billing['street'] = array($request->getParam('billingStreet1'), $request->getParam('billingStreet2'));
         }
 
-        //TODO
-        //telephone
-        //region
-        //region_id
-        //vat_id
-        //company
         if(empty($shipping['telephone'])) {
-            $billing['telephone'] = $shipping['telephone'] = '0000000000';
+            $shipping['telephone'] = $this->getDefaultAttributeValue('telephone', '0000000000');
         }
 
-        $billing['region'] = $shipping['region'] = "-";
-        $billing['region_id'] = $shipping['region_id'] = "1";
+        if(empty($billing['telephone'])) {
+            $billing['telephone'] = $this->getDefaultAttributeValue('telephone', '0000000000');
+        }
+
+        $billing['region'] = $shipping['region'] = $this->getDefaultAttributeValue('region', '-');
+        $billing['region_id'] = $shipping['region_id'] = $this->getDefaultAttributeValue('region', '1');
 
         return array('billing'=>$billing, 'shipping'=>$shipping);
     }
@@ -227,10 +231,16 @@ class Monext_Payline_Helper_Widget extends Monext_Payline_Helper_Data
                 $data['firstname'] = $match[1];
                 $data['lastname'] = $match[2];
             } else {
-                $data['firstname'] = 'n/a';
+                $data['firstname'] = $this->getDefaultAttributeValue('firstname', 'n/a');;
             }
         }
         return $data;
     }
+
+    protected function getDefaultAttributeValue($attributeCode='', $defaultValue='-') {
+        $default = Mage::getStoreConfig('payline/PaylineSHORTCUT/default_address_value/'.$attributeCode);
+        return !empty($default) ? $default : $defaultValue;
+    }
+
 
 } // end class

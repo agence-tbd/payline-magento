@@ -37,12 +37,14 @@ class Monext_Payline_Block_Checkout_Widget_Opcheckout extends Mage_Checkout_Bloc
                        continue;
                    }
                    $html = preg_replace('/display:none;/', '', $this->getPaymentMethodFormHtml($_method));
-                   $html = str_replace(array("\r\n","\r","\n"),"",$this->jsQuoteEscape($html));
+                   $html = str_replace(array("\r\n","\r","\n"),"", $html);
+
+                   $title = $this->getMethodTitle($_method);
 
                    $customMethods[] = array('code'=>$_code,
-                           'title'=>$this->escapeHtml($this->getMethodTitle($_method)),
+                           'title'=>$this->escapeHtml($title),
                            'label'=>$this->getMethodLabelAfterHtml($_method),
-                           'html' => ($html) ? $html : $this->getMethodTitle($_method)
+                           'html' => ($html) ? $html : $title
                            );
                }
            }

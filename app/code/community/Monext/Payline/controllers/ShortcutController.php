@@ -43,6 +43,7 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
      */
     public function saveAddressesAction()
     {
+        $result = array();
         try {
             $postData = Mage::helper('payline/widget')->prepareShortcutPostData($this->getRequest());
             $resultAutoAccount = array();
@@ -62,6 +63,9 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
             $this->getRequest()->setPost('billing', $postData['billing']);
             $this->getRequest()->setPost('shipping', $postData['shipping']);
 
+
+            $this->getOnepage()->getQuote()->unsCustomerID();
+
             $this->saveBillingAction();
             $result =  Mage::helper('core')->jsonDecode($this->getResponse()->getBody());
             if(empty($result['error']) and !empty($result['goto_section']) and $result['goto_section']=='shipping' ) {
@@ -71,13 +75,13 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
 
                 }
             }
+            $result= array_merge($resultAutoAccount, $result);
 
         } catch (Exception $e) {
             Mage::logException($e);
             $result['error'] = $this->__($e->getMessage());
         }
 
-        $result= array_merge($resultAutoAccount, $result);
         $this->_prepareDataJSON($result);
     }
 
@@ -87,32 +91,46 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
      */
     public function saveShippingMethodAction()
     {
-        parent::saveShippingMethodAction();
+        $result = array();
+        try {
+            parent::saveShippingMethodAction();
 
-        $result =  Mage::helper('core')->jsonDecode($this->getResponse()->getBody());
-        if(empty($result['error']) and !empty($result['goto_section']) and $result['goto_section']=='payment' ) {
+            $result =  Mage::helper('core')->jsonDecode($this->getResponse()->getBody());
+            if(empty($result['error']) and !empty($result['goto_section']) and $result['goto_section']=='payment' ) {
 
-            $result['goto_section'] = 'review';
-            $result['update_section'] = array(
-                'name' => 'review',
-                'html' => $this->_getReviewHtml()
-            );
+                $result['goto_section'] = 'review';
+                $result['update_section'] = array(
+                    'name' => 'review',
+                    'html' => $this->_getReviewHtml()
+                );
 
-            $result['base_grand_total'] = $this->getOnepage()->getQuote()->getBaseGrandTotal();
+                $result['base_grand_total'] = $this->getOnepage()->getQuote()->getBaseGrandTotal();
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+            $result['error'] = $this->__($e->getMessage());
         }
+
         $this->_prepareDataJSON($result);
     }
 
     public function saveOrderAction()
     {
-        $this->getOnepage()->getQuote()->collectTotals();
+        $result = array();
+        try {
+            $this->getOnepage()->getQuote()->collectTotals();
 
-        parent::saveOrderAction();
+            parent::saveOrderAction();
 
-        $result =  Mage::helper('core')->jsonDecode($this->getResponse()->getBody());
-        if(empty($result['error']) and !empty($result['success']) ) {
-            $result['redirect'] = Mage::getUrl('checkout/onepage/success');
+            $result =  Mage::helper('core')->jsonDecode($this->getResponse()->getBody());
+            if(empty($result['error']) and !empty($result['success']) ) {
+                $result['redirect'] = Mage::getUrl('checkout/onepage/success');
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+            $result['error'] = $this->__($e->getMessage());
         }
+
         $this->_prepareDataJSON($result);
     }
 
@@ -125,7 +143,10 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
     {
         $layout = $this->getLayout();
         $update = $layout->getUpdate();
+
+        $update->setCacheId(uniqid("payline_shortcut_shippingmethod"));
         $update->load('payline_shortcut_shippingmethod');
+
         $layout->generateXml();
         $layout->generateBlocks();
         $output = $layout->getOutput();
@@ -146,7 +167,10 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
 
         $layout = $this->getLayout();
         $update = $layout->getUpdate();
+
+        $update->setCacheId(uniqid("payline_shortcut_review"));
         $update->load('payline_shortcut_review');
+
         $layout->generateXml();
         $layout->generateBlocks();
         return $layout->getBlock('root')->toHtml();
@@ -178,7 +202,6 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
             if($session->isLoggedIn()) {
                 $result['is_logged'] = true;
                 if($session->getCustomer()->getEmail()!==$email) {
-                    //TODO:
                     $result['email_mismatch'] = true;
                 }
                 return false;
@@ -224,6 +247,4 @@ class Monext_Payline_ShortcutController extends Mage_Checkout_OnepageController
 
         return true;
     }
-
-
 }

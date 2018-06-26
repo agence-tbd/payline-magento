@@ -11,6 +11,12 @@
         return widgetWrapper.getPmMethods();
     }
 
+    didShowStateHandler = function (state) {
+        if (state && state.state == 'PAYMENT_METHODS_LIST') {
+            widgetWrapper.setPmMethodTabs();
+        }
+    };
+
     //Dummy payment initWhatIsCvvListeners method
     Payment.prototype.initWhatIsCvvListeners = function () {
     }
@@ -21,7 +27,7 @@
         + '<div class="pl-input-group pl-input-container">'
         + '<div class="magento-payline-custom-html">#{paymentHtml}</div>'
         + '</div></div>'
-        + '</div><button id="pl-pm-custom_5-payBtn" class="pl-pay-btn" type="button" onclick="widgetWrapper.saveCustomPayment(\'#{paymentCode}\')">Payer</button></div></div></div>');
+        + '</div><div class="pl-pay-btn-container"><button id="pl-pm-custom_5-payBtn" class="pl-pay-btn" type="button" onclick="widgetWrapper.saveCustomPayment(\'#{paymentCode}\')">Payer</button></div></div></div></div>');
 
     // Dummy payment object
     var payment = new Payment();
@@ -35,7 +41,8 @@
         <?php echo $this->getJsonAllMethods()?>,
         <?php echo $this->getQuoteBaseGrandTotal()?>,
         "<?php echo $this->getCurrencyCode(); ?>",
-        paymentTemplate
+        paymentTemplate,
+        {"data-custompm":"customPmHandler", "data-event-didshowstate": "didShowStateHandler"}
     );
 
     Review.prototype.isAgreementPassed = function () {
