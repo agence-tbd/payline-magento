@@ -1,3 +1,8 @@
+1.8.6
+Ajout du bouton AmazonPay dans le panier
+Refactoring de code
+
+
 1.8.5.6
 Prise en compte des codes retour 02016 et 02017
 
