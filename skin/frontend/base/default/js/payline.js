@@ -156,31 +156,31 @@ PaylineWidgetWrapper.prototype = {
 
     setPmMethodTabs: function()
     {
-        $$('div[id*="pmLayout-"][class*="pl-card"]').each(function(divTab) {
+        if($$('div[id*="pmLayout-"][class*="pl-card"]').length > 0) {
+            $$('div[id*="pmLayout-"][class*="pl-card"]').each(function(divTab){
+                var re = new RegExp(this.rootTabSelector+'(\\w+)',"ig");
+                var result = re.exec(divTab.id);
+                var tabSpan = divTab.select('span.pl-card-logo').first();
+                if (tabSpan && result) {
+                    tabSpan.setAttribute('style', 'background:none; width:auto !important');
 
-            var re = new RegExp(this.rootTabSelector+'(\\w+)',"ig");
-            var result = re.exec(divTab.id);
-            var tabSpan = divTab.select('span.pl-card-logo').first();
+                    if(this.allPaymentMethods[result[1]]) {
+                        tabSpan.update(this.allPaymentMethods[result[1]].title);
+                    } else {
+                        tabSpan.update(result[1]);
+                    }
 
-            if (tabSpan && result) {
-                tabSpan.setAttribute('style', 'background:none; width:auto !important');
-
-                if(this.allPaymentMethods[result[1]]) {
-                    tabSpan.update(this.allPaymentMethods[result[1]].title);
-                } else {
-                    tabSpan.update(result[1]);
+                    var divPayment = divTab.up('div').up('div');
+                    if(this.finalPaymentMethods && this.finalPaymentMethods[result[1]]) {
+                        divPayment.show();
+                    } else {
+                        divPayment.hide();
+                    }
                 }
-
-                var divPayment = divTab.up('div').up('div');
-                if(this.finalPaymentMethods && this.finalPaymentMethods[result[1]]) {
-                    divPayment.show();
-                } else {
-                    divPayment.hide();
-                }
-            }
-
-
-        }.bind(this));
+            }.bind(this));
+        } else {
+            setTimeout(this.setPmMethodTabs.bind(this), 500);
+        }
 
         $$('[id^="payment_form_"]').invoke('show');
     },
