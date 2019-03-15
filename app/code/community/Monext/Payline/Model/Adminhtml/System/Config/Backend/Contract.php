@@ -33,6 +33,12 @@ class Monext_Payline_Model_Adminhtml_System_Config_Backend_Contract extends Mage
     {
         $contract_lists = Mage::app()->getRequest()->getParam('contract_list');
 
+        foreach (Mage::getModel('payline/contract')->getCollection()->getAllIds() as $contractId) {
+            if (!isset($contract_lists[$contractId])) {
+                $contract_lists[$contractId] = array();
+            }
+        }
+
         $defaultValues=array('is_primary'=>0,'is_secondary'=>0,'is_secure'=>0,'is_included_wallet_list'=>0);
         foreach ($contract_lists as $contactId=>$contractValues) {
             $contract_lists[$contactId] = array_merge($defaultValues, $contractValues);
