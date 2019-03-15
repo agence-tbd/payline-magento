@@ -13,7 +13,7 @@
 		Fonctionnalit&amp;#xE9;s : autorisation, autorisation + validation, paiement en n fois, paiement par portefeuille et en 1 clic, validation et remboursement partiels, multi-boutique...</description>
    <license>GNU General Public License (GPL)</license>
    <license_uri>http://www.opensource.org/licenses/gpl-license.php</license_uri>
-   <version>1.8.6</version>
+   <version>1.8.6.1</version>
    <stability>stable</stability>
    <notes>Ajout du paiement par shortcut (AMAZONPAY)</notes>
    <authors>

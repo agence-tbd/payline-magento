@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
 	<name>Payline</name>
-	<version>1.8.5.8</version>
+	<version>1.8.6.1</version>
 	<stability>stable</stability>
 	<license uri="http://www.opensource.org/licenses/gpl-license.php">GNU General Public License (GPL)</license>
 	<channel>community</channel>
