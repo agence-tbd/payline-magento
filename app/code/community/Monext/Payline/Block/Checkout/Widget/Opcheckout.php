@@ -16,7 +16,10 @@ class Monext_Payline_Block_Checkout_Widget_Opcheckout extends Mage_Checkout_Bloc
        $store = $quote ? $quote->getStoreId() : null;
        $methods = array();
        foreach ($this->helper('payment')->getStoreMethods($store, $quote) as $method) {
-               $methods[] = $method;
+           if(!$method->canUseCheckout()) {
+              continue;
+           }    
+           $methods[] = $method;
        }
        return $methods;
    }
