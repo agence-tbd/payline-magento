@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Monext_Payline>
-            <version>1.8.6.1</version>
+            <version>1.8.6.2</version>
         </Monext_Payline>
     </modules>
     <global>

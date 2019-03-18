@@ -766,6 +766,7 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
         } catch (Exception $e) {
             //TODO: If payment is done it should be canceled
             Mage::helper('payline/logger')->log('[cptReturnWidgetAction] '.$e->getMessage());
+            Mage::helper('payline/logger')->log('[cptReturnWidgetAction] '.$e->__toString());
         }
 
         Mage::getSingleton('core/session')->addError($this->__('There was an error processing your order. Please contact us or try again later.'));
