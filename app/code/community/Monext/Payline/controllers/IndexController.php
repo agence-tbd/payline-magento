@@ -216,7 +216,8 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
                             ->setDateCreate(time());
             $token->save();
 
-            header("location:" . $result['redirectURL']);
+            //header("location:" . $result['redirectURL']);
+            $this->_redirectUrl($result['redirectURL']);
             return;
         } else { // Payline error
             Mage::helper('payline/payment')->updateStock($this->order);
