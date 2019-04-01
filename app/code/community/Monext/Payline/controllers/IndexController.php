@@ -822,6 +822,7 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
 
         $tokenForUpdate = Mage::getModel('payline/token')->load($tokenData['id']);
         $webPaymentDetails = Mage::helper('payline')->initPayline('CPT')->getWebPaymentDetails(array('token' => $paylineToken, 'version' => Monext_Payline_Helper_Data::VERSION));
+        $this->order->getPayment()->setAdditionalInformation('payline_payment_info', $webPaymentDetails['payment']);
         if(isset($webPaymentDetails)){
 
         	if( is_array($webPaymentDetails) and !empty($webPaymentDetails['transaction'])and !empty($webPaymentDetails['transaction']['id']) ){
@@ -929,6 +930,7 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
     public function nxNotifAction(){
         $queryData = $this->getRequest()->getQuery();
         $res = Mage::helper('payline')->initPayline('NX')->getWebPaymentDetails(array('token' => $queryData['token'], 'version' => Monext_Payline_Helper_Data::VERSION));
+        $this->order->getPayment()->setAdditionalInformation('payline_payment_info', $res['payment']);
         if (isset($res['privateDataList']['privateData']['value'])) {
             $orderRef = $res['privateDataList']['privateData']['value'];
         } else {
@@ -1121,6 +1123,7 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
     public function nxCancelAction(){
         $queryData = $this->getRequest()->getQuery();
         $res = Mage::helper('payline')->initPayline('NX')->getWebPaymentDetails(array('token' => $queryData['token'], 'version' => Monext_Payline_Helper_Data::VERSION));
+        $this->order->getPayment()->setAdditionalInformation('payline_payment_info', $res['payment']);
         if (isset($res['privateDataList']['privateData']['value'])) {
             $orderRef = $res['privateDataList']['privateData']['value'];
         } else {

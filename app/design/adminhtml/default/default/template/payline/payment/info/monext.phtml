@@ -2,10 +2,11 @@
 <?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?>
 <br />
 <?php
+    $methodInfo = $this->getInfo()->getAdditionalInformation('payline_payment_info');
     $name = Mage::helper('payline')->getPaymentContractType( 
                 $this->getMethod()->getCode(),
                 $this->getInfo()->getCcType() );
-    echo $name;
+    echo isset($methodInfo) && isset($methodInfo['method']) ? $methodInfo['method'] : $name;
 ?>
 
 <?php if ($_specificInfo = $this->getSpecificInformation()):?>
