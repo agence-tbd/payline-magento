@@ -215,12 +215,14 @@ class Monext_Payline_IndexController extends Mage_Core_Controller_Front_Action
                             ->setToken($result['token'])
                             ->setDateCreate(time());
             $token->save();
-
+//return;
             //header("location:" . $result['redirectURL']);
             $this->_redirectUrl($result['redirectURL']);
             return;
         } else { // Payline error
-            Mage::helper('payline/payment')->updateStock($this->order);
+            if (Mage::getStoreConfig('payment/payline_common/increment_stock_on_failed_dwp')) {
+                Mage::helper('payline/payment')->updateStock($this->order);
+            }
             $msg = Mage::helper('payline')->__('Error during payment');
             Mage::getSingleton('core/session')->addError($msg);
             if (isset($result) && is_array($result)) {

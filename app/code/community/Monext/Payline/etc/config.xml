@@ -284,6 +284,7 @@
                 <init_order_status>pending</init_order_status>
                 <fraud_order_status>pending</fraud_order_status>
                 <automate_wallet_subscription>1</automate_wallet_subscription>
+                <increment_stock_on_failed_dwp>1</increment_stock_on_failed_dwp>
             </payline_common>
             <PaylineCPT>
                 <model>payline/cpt</model>

@@ -199,6 +199,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </wait_order_status>
+                        <increment_stock_on_failed_dwp translate="label">
+                            <config_path>payment/payline_common/increment_stock_on_failed_dwp</config_path>
+                            <label>Increment Stock on failed Dwp</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>122</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </increment_stock_on_failed_dwp>
                         <heading_payment_author translate="label">
                             <label>Status for an authorized payment</label>
                             <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
