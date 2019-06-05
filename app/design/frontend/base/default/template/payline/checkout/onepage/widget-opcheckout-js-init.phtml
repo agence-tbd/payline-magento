@@ -95,7 +95,7 @@
 
 
         Payline.Api.updateWebpaymentData('<?php echo $this->helper('payline/widget')->getDataToken(); ?>', datasPayline,function (){
-            widgetWrapper.initPayline(noAgreement);
+            widgetWrapper.initPayline(noAgreement, <?php echo (int) Mage::getStoreConfig('payment/PaylineCPT/display_review') ?>);
             if (noAgreement) {
                 that.save();
             }

@@ -292,6 +292,7 @@
                 <!-- Auth+Capture, 100 is capture only -->
                 <payline_payment_action>101</payline_payment_action>
                 <send_wallet_id>1</send_wallet_id>
+                <display_review>0</display_review>
             </PaylineCPT>
             <PaylineNX>
                 <model>payline/nx</model>

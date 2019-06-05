@@ -84,7 +84,7 @@ PaylineWidgetWrapper.prototype = {
         }
     },
 
-    initPayline: function(noAgreement){
+    initPayline: function(noAgreement, displayReview){
 
         var $checkoutReview = $('checkout-review-load');
 
@@ -109,7 +109,11 @@ PaylineWidgetWrapper.prototype = {
                         + '</table></dd>'}
                     );
                 });
-                $('checkout-review-table-wrapper').hide();
+                if (!displayReview) {
+                    $('checkout-review-table-wrapper').hide();
+                } else {
+                    $('checkout-review-table-wrapper').show();
+                }
             }
 
             this.insertWidget($checkoutReview);
