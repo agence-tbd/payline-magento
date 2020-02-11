@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Monext_Payline>
-            <version>1.8.6.2</version>
+            <version>1.8.7.1</version>
         </Monext_Payline>
     </modules>
     <global>
@@ -293,6 +293,7 @@
                 <payline_payment_action>101</payline_payment_action>
                 <send_wallet_id>1</send_wallet_id>
                 <display_review>0</display_review>
+                <shipping_method_relay_codes>socolissimo_shop,socolissimo_postoffice</shipping_method_relay_codes>
             </PaylineCPT>
             <PaylineNX>
                 <model>payline/nx</model>
@@ -325,6 +326,20 @@
                     <!-- Default required attribute address value -->
                 </default_address_value>
             </PaylineSHORTCUT>
+            <payline_contract>
+                <KLARNA_PAY>Monext_Payline_Model_Contract_Klarnapay</KLARNA_PAY>
+            </payline_contract>
         </payline>
+
+        <payment>
+            <payline_common>
+                <default>
+                    <deliverytime>2</deliverytime>
+                    <deliverymode>4</deliverymode>
+                    <delivery_expected_delay>3</delivery_expected_delay>
+                    <prefix>4</prefix>
+                </default>
+            </payline_common>
+        </payment>
     </default>
 </config>

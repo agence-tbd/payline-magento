@@ -50,6 +50,9 @@ class Monext_Payline_WalletController extends Mage_Core_Controller_Front_Action
         $res = Mage::getModel('payline/wallet')->getWalletData();
         if ($res) {
             $this->getLayout()->getBlock('payline-wallet-details')->setWallet($res);
+        } else {
+            $this->_redirect('payline/wallet/subscribe');
+            return;
         }
 
         $this->_initLayoutMessages('customer/session');

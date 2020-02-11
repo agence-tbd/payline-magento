@@ -64,26 +64,33 @@ class Monext_Payline_UnloggedwalletController extends Mage_Core_Controller_Front
         $this->getLayout()->getBlock('payline-iframe-leaver')->setRedirectUrl($redirectUrl);
         $this->renderLayout();
     }
-    
+
     /**
      * New subscription notification
      */
-    public function updateNotifyAction(){
-    	$queryData = $this->getRequest()->getQuery();
-        $customerData = Mage::getSingleton('customer/session')->getCustomer()->getData();
-        Mage::helper('payline')->initPayline('WALLET')->getWebWallet(array('token' => $queryData['token'], 'version' => Monext_Payline_Helper_Data::VERSION)); // appel sans traitement pour d�sactiver la notification
-    	$res = Mage::helper('payline')->initPayline('WALLET')->getCards(array('contractNumber' => $customerData['wallet_contract_number'], 'walletId' => $customerData['wallet_id']));
+    public function updateNotifyAction()
+    {
+        $queryData = $this->getRequest()->getQuery();
+        $customer = Mage::getSingleton('customer/session')->getCustomer();
+
+        /** @var Monext_Payline_Helper_Data $paylineHelper */
+        $paylineHelper = Mage::helper('payline');
+        $paylineSDK = $paylineHelper->initPayline('WALLET');
+        $paylineSDK->getWebWallet(array('token' => $queryData['token'], 'version' => Monext_Payline_Helper_Data::VERSION)); // appel sans traitement pour désactiver la notification
+
+        $res = $paylineSDK->getCards(array('contractNumber' => ($customer->getWalletContractNumber() ? $customer->getWalletContractNumber() : $paylineHelper->contractNumber), 'walletId' => $customer->getWalletId(), 'cardInd' => ''));
+
         $redirectUrl="payline/wallet/manage";
         if ($res['result']['code']!='02500'){
-        	$msgLog='PAYLINE ERROR on getWebWallet after update: '.$res['result']['code']. ' '.$res['result']['longMessage'];
-            $msg=Mage::helper('payline')->__('Error during update');
+            $msgLog='PAYLINE ERROR on getWebWallet after update: '.$res['result']['code']. ' '.$res['result']['longMessage'];
+            $msg = $paylineHelper->__('Error during update');
             Mage::helper('payline/Logger')->log('[updateNotifyAction] ' .$msgLog);
             Mage::getSingleton('core/session')->addError($msg);
             $redirectUrl="payline/wallet/update";
             return $redirectUrl;
         }
         Mage::getSingleton('customer/session')->setWalletData(null);
-        $msg=Mage::helper('payline')->__('Wallet update succeed');
+        $msg = $paylineHelper->__('Wallet update succeed');
         Mage::getSingleton('core/session')->addSuccess($msg);
         return $redirectUrl;
     }

@@ -2,7 +2,6 @@
 
 class Monext_Payline_Block_Cpt extends Mage_Payment_Block_Form
 {
-
     /**
      * Payment methods
      * @var array
@@ -23,6 +22,7 @@ class Monext_Payline_Block_Cpt extends Mage_Payment_Block_Form
      * Return payment methods = primary contracts
      *
      * @return array
+     * @throws Mage_Core_Model_Store_Exception
      */
     public function getPaymentMethods()
     {
@@ -32,9 +32,20 @@ class Monext_Payline_Block_Cpt extends Mage_Payment_Block_Form
                 ->addFilterStatus(true, Mage::app()->getStore()->getId());
             $contractList = array();
             foreach ($contracts as $contract) {
+                /* check if contract is eligible for current quote */
+                $contractType = $contract->getContractType();
+                $configPath = Monext_Payline_Helper_Payment::PAYLINE_CONTRACT_CONFIG_PATH . $contractType;
+                if (($contractClassName = Mage::getStoreConfig($configPath)) && (class_exists($contractClassName))) {
+                    $contractClass = new $contractClassName;
+                    $quote = Mage::getSingleton('checkout/session')->getQuote();
+                    if (!$contractClass->isEligibleForQuote($quote)) {
+                        continue;
+                    }
+                }
+
                 $contractList[] = array('number' => $contract->getNumber(),
-                    'type'   => $contract->getContractType(),
-                    'name'   => $contract->getName());
+                    'type' => $contract->getContractType(),
+                    'name' => $contract->getName());
             }
             $this->_paymentMethods = $contractList;
         }
@@ -86,6 +97,12 @@ class Monext_Payline_Block_Cpt extends Mage_Payment_Block_Form
             case '3XCB' :
             case 'FCB3X' :
             case 'FCB4X' :
+            case 'KLARNA_PAY' :
+            case '3XONEY' :
+            case '4XONEY' :
+            case 'ONEY' :
+            case '3XONEY_SF' :
+            case '4XONEY_SF' :
                 return $this->getSkinUrl('images/monext/payline_moyens_paiement/' . strtolower($cardType) . '.png');
             case 'CBPASS' :
                 return $this->getSkinUrl('images/monext/payline_moyens_paiement/passvisa.png');

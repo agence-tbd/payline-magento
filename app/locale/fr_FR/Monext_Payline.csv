@@ -245,3 +245,15 @@
 "Pay with shortcut","Paiement express"
 "Guest","Mode invité"
 "Register and auto log","Création de compte et login"
+"Contracts specific settings","Paramètrages spécifiques pour contrats"
+"Please fill in the fields in the ""Delivery configuration"" and ""Prefix configuration"" section first and foremost. If you they are not filled in, the Default values will be used.","Merci de renseigner les champs ""Configuration livraison"" et ""Methode de livraison Magento"" en priorité."
+"Delivery configuration","Configuration livraison"
+"Shipping method","Methode de livraison Magento"
+"Delivery time","Type de livraison"
+"Delivery mode","Mode de livraison"
+"Delivery expected delay","Delai de livraison (j)"
+"Prefix configuration","Configuration du titre"
+"Default values","Valeurs par défaut"
+"Prefix","Titre"
+
+

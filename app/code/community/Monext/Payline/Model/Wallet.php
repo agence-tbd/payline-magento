@@ -110,19 +110,20 @@ class Monext_Payline_Model_Wallet extends Mage_Payment_Model_Method_Abstract
         return $checkResult->isAvailable;
     }
 
-    public function getWalletData(){
-
-        $customerSession=Mage::getSingleton('customer/session');
+    public function getWalletData()
+    {
+        /** @var Mage_Customer_Model_Session $customerSession */
+        $customerSession = Mage::getSingleton('customer/session');
         if ($customerSession->hasWalletData()) {
             $this->_walletData = $customerSession->getWalletData();
         }
-
+        $walletId = '';
+        $customer = $customerSession->getCustomer();
         if ($customerSession->isLoggedIn()){
-            $customer=$customerSession->getCustomer();
-            $walletId=$customer->getWalletId();
+            $walletId = $customer->getWalletId();
         }
 
-        if (!isset($walletId) || empty($walletId)){
+        if (empty($walletId)){
             $this->_walletData =  false;
         }
 
@@ -135,34 +136,35 @@ class Monext_Payline_Model_Wallet extends Mage_Payment_Model_Method_Abstract
                 $walletContractNumber = $helperPayline->contractNumber;
             }
             $array = array(
-                        'walletId' => $walletId,
-                        'cardInd' => '',
-                        'contractNumber' => $walletContractNumber,
-                        'version' => Monext_Payline_Helper_Data::VERSION);
+                'walletId' => $walletId,
+                'cardInd' => '',
+                'contractNumber' => $walletContractNumber,
+                'version' => Monext_Payline_Helper_Data::VERSION
+            );
 
             try {
                 $res = $paylineSDK->getWallet($array);
+                if (is_string($res) or ! isset($res['result']) || $res['result']['code'] != '02500') {
+                    $this->_walletData = false;
+                    if (is_string($res)) {
+                        $msgLog = 'PAYLINE ERROR on getWallet: ' . $res;
+                    } elseif (isset($res['result'])) {
+                        $msgLog = 'PAYLINE ERROR on getWallet: ' . $res['result']['code'] . ' ' . $res['result']['longMessage'] . ' (wallet ' . $walletId . ')';
+                    } else {
+                        $msgLog = 'Unknown PAYLINE ERROR on getWallet for wallet ' . $walletId;
+                    }
+                    $msg = Mage::helper('payline')->__('Error while retrieving wallet information');
+                    Mage::helper('payline/logger')->log('[getWalletData] ' . $msgLog);
+                    Mage::getSingleton('customer/session')->addError($msg);
+                } else {
+                    $this->_walletData = $res['wallet'];
+                }
             } catch (Exception $e) {
                 $msgLog = 'Unknown PAYLINE ERROR on getWallet for wallet ' . $walletId . ' (Payline unreachable?)';
                 $msg = Mage::helper('payline')->__('Error while retrieving wallet information');
                 Mage::helper('payline/logger')->log('[getWalletData] ' . $msgLog);
                 Mage::getSingleton('customer/session')->addError($msg);
                 $this->_walletData = false;
-            }
-            if (is_string($res) or ! isset($res['result']) || $res['result']['code'] != '02500') {
-                $this->_walletData = false;
-                if (is_string($res)) {
-                    $msgLog = 'PAYLINE ERROR on getWallet: ' . $res;
-                } elseif (isset($res['result'])) {
-                    $msgLog = 'PAYLINE ERROR on getWallet: ' . $res['result']['code'] . ' ' . $res['result']['longMessage'] . ' (wallet ' . $walletId . ')';
-                } else {
-                    $msgLog = 'Unknown PAYLINE ERROR on getWallet for wallet ' . $walletId;
-                }
-                $msg = Mage::helper('payline')->__('Error while retrieving wallet information');
-                Mage::helper('payline/logger')->log('[getWalletData] ' . $msgLog);
-                Mage::getSingleton('customer/session')->addError($msg);
-            } else {
-                $this->_walletData = $res['wallet'];
             }
         }
         $customerSession->setWalletData($this->_walletData);

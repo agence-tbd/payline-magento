@@ -16,10 +16,14 @@
  */
 class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
 {
+    const PAYLINE_BUYER_TITLE_DEFAULT_VALUE = 4;
+    const PAYLINE_CONTRACT_CONFIG_PATH = 'payline/payline_contract/';
+
     /**
      * Init a payment
      *
      * @return array
+     * @throws Zend_Validate_Exception
      */
     public function initWithQuote(Mage_Sales_Model_Quote $quote)
     {
@@ -30,6 +34,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
      * Init a payment
      *
      * @return array
+     * @throws Zend_Validate_Exception
      */
     public function init(Mage_Sales_Model_Order $order)
     {
@@ -37,9 +42,125 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Add delivery data to payline data
+     *
+     * @param array $array
+     * @param object $salesObject
+     * @return array
+     */
+    public function _addDeliveryData($array, $salesObject)
+    {
+        if ($salesObject->getIsVirtual()) {
+            return $array;
+        }
+
+        $addressConfigSerialized = Mage::getStoreConfig('payline/payline_common/address');
+        if (!$addressConfigSerialized) {
+            return $array;
+        }
+
+        $defaultDeliveryData = array(
+            'deliveryTime'=> Mage::getStoreConfig('payment/payline_common/default/deliverytime'),
+            'deliveryMode'=>Mage::getStoreConfig('payment/payline_common/default/deliverymode'),
+            'deliveryExpectedDelay'=>Mage::getStoreConfig('payment/payline_common/default/delivery_expected_delay'),
+        );
+        $defaultDeliveryData['deliveryExpectedDate'] = $this->_getDeliveryExpectedDate($defaultDeliveryData['deliveryExpectedDelay']);
+
+        try {
+            $addressConfig = Mage::helper('core/unserializeArray')->unserialize($addressConfigSerialized);
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+
+        if (empty($addressConfig)) {
+            return $array;
+        }
+
+
+        $deliveryData = array();
+        $objectShippingMethod = $salesObject->getShippingMethod();
+        if ($objectShippingMethod) {
+            foreach ($addressConfig as $shippingMethodConfig) {
+                if ($shippingMethodConfig['shipping_method'] == $objectShippingMethod) {
+
+                    $array['order']['deliveryTime'] = $shippingMethodConfig['deliverytime'];
+                    $array['order']['deliveryMode'] = $shippingMethodConfig['deliverymode'];
+
+                    $expectedDelay = $shippingMethodConfig['delivery_expected_delay'];
+                    $deliveryData['deliveryExpectedDelay'] = $expectedDelay;
+
+                    try {
+                        $deliveryData['deliveryExpectedDate'] = $this->_getDeliveryExpectedDate($expectedDelay);
+                    } catch (Exception $e) {
+                        Mage::log($e->getMessage(), null, 'payline.log', true);
+                    }
+                    break;
+                }
+            }
+        }
+
+        $deliveryData = array_filter($deliveryData);
+        $deliveryData = array_merge($defaultDeliveryData, $deliveryData);
+
+        $array['order'] = array_merge($array['order'], $deliveryData);
+
+        return $array;
+    }
+
+    protected function _getDeliveryExpectedDate($expectedDelay)
+    {
+        $expectedDelay = (int)$expectedDelay;
+        $currentDate = new Zend_Date(Mage::getModel('core/date')->timestamp());
+
+        // Cannot use formatDate which depends fo current locale options and time zone
+        return $currentDate->add($expectedDelay)->toString('dd/MM/yyyy');
+    }
+
+
+    /**
+     * Get buyer title based on customer prefix
+     *
+     * @param string $prefix
+     * @return int
+     */
+    protected function _getBuyerTitle($prefix)
+    {
+        $defaultValue = Mage::getStoreConfig('payment/payline_common/default/prefix');
+        if(empty($defaultValue)) {
+            $defaultValue = self::PAYLINE_BUYER_TITLE_DEFAULT_VALUE;
+        }
+
+
+        $prefixConfigSerialized = Mage::getStoreConfig('payline/payline_common/prefix');
+        if (!$prefixConfigSerialized) {
+            return $defaultValue;
+        }
+
+        try {
+            $prefixConfig = Mage::helper('core/unserializeArray')->unserialize($prefixConfigSerialized);
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+
+        if (empty($prefixConfig)) {
+            return $defaultValue;
+        }
+
+        foreach ($prefixConfig as $prefixConfigData) {
+            if ($prefixConfigData['customer_prefix'] == $prefix) {
+                return $prefixConfigData['customer_title'];
+            }
+        }
+
+        return $defaultValue;
+    }
+
+    /**
      * Init a payment
      *
+     * @param $salesObject
      * @return array
+     * @throws Zend_Validate_Exception
      */
     protected function _init($salesObject)
     {
@@ -54,6 +175,13 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
 
         $array['order']['amount'] = $array['payment']['amount'];
         $array['order']['currency'] = $_numericCurrencyCode;
+        $array['order']['country'] = Mage::helper('core')->getDefaultCountry($salesObject->getStore());
+
+        $array['order']['comment'] = 'Magento order';
+
+        /* add delivery data based on shipping method */
+        $array = $this->_addDeliveryData($array, $salesObject);
+
         $billingAddress = $salesObject->getBillingAddress();
         // BUYER
         $customer = Mage::getModel('customer/customer')->load($salesObject->getCustomerId());
@@ -66,16 +194,10 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
             $buyerFirstName = substr($billingAddress->getFirstname(), 0, 50);
         }
 
-        $buyerPrefix = $customer->getPrefix();
-        if($buyerPrefix == 'Mme'){
-          $array['buyer']['title'] = '1';
-        } elseif ($buyerPrefix == 'Mlle') {
-          $array['buyer']['title'] = '3';
-        } elseif ($buyerPrefix == 'M.') {
-          $array['buyer']['title'] = '4';
-        } else {
-          $array['buyer']['title'] = '4';
-        }
+        /* get buyer title based on customer prefix */
+        $prefix = $customer->getPrefix();
+        $array['buyer']['title'] = $this->_getBuyerTitle($prefix);
+
         $array['buyer']['lastName'] = Mage::helper('payline')->encodeString($buyerLastName);
         $array['buyer']['firstName'] = Mage::helper('payline')->encodeString($buyerFirstName);
         $email = $customer->getEmail();
@@ -84,13 +206,14 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         }
         $pattern = '/\+/i';
         $charPlusExist = preg_match($pattern, $email);
-        if (strlen($email) <= 50 && Zend_Validate::is($email, 'EmailAddress') && ! $charPlusExist) {
+        if (strlen($email) <= 50 && Zend_Validate::is($email, 'EmailAddress') && !$charPlusExist) {
             $array['buyer']['email'] = Mage::helper('payline')->encodeString($email);
         } else {
             $array['buyer']['email'] = '';
         }
         $array['buyer']['customerId'] = Mage::helper('payline')->encodeString($email);
         $array['buyer']['accountCreateDate'] = date('d/m/y', $customer->getCreatedAtTimestamp());
+
         $ordersHistory = Mage::getModel('sales/order')->getCollection()->addFieldToFilter('customer_id', $salesObject->getCustomerId());
         $cumulAmount = 0;
         $maxEntity = 0;
@@ -104,32 +227,35 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         }
         $ordersHistoryCount = $ordersHistory->count();
         $array['buyer']['accountOrderCount'] = $ordersHistory->count(); // orders
-                                                                        // count
-        if($ordersHistoryCount>0) {
+        // count
+        if ($ordersHistoryCount > 0) {
             $array['buyer']['accountAverageAmount'] = round(($cumulAmount / $ordersHistoryCount) * 100); // average
-                                                                                                     // order
-                                                                                                     // amount,
-                                                                                                     // in
-                                                                                                     // cents
+            // order
+            // amount,
+            // in
+            // cents
         } else {
             $array['buyer']['accountAverageAmount'] = 0;
         }
         $forbidenPhoneCars = array(
-                                ' ',
-                                '.',
-                                '(',
-                                ')',
-                                '-',
-                                '/',
-                                '\\',
-                                '#');
+            ' ',
+            '.',
+            '(',
+            ')',
+            '-',
+            '/',
+            '\\',
+            '#');
         $regexpPhone = '/^\+?[0-9]{1,14}$/';
         $shippingAddress = $salesObject->getShippingAddress();
         $shippingPhone = null;
         $billingPhone = null;
         if ($shippingAddress != null) {
+            /* get shipping address title based on customer prefix */
+            $prefix = $shippingAddress->getPrefix();
+            $array['shippingAddress']['title'] = $this->_getBuyerTitle($prefix);
+
             $array['shippingAddress']['name'] = Mage::helper('payline')->encodeString(substr($shippingAddress->getName(), 0, 100));
-            $array['shippingAddress']['title'] = Mage::helper('payline')->encodeString($shippingAddress->getPrefix());
             $array['shippingAddress']['firstName'] = Mage::helper('payline')->encodeString(substr($shippingAddress->getFirstname(), 0, 100));
             $array['shippingAddress']['lastName'] = Mage::helper('payline')->encodeString(substr($shippingAddress->getLastname(), 0, 100));
             $array['shippingAddress']['street1'] = Mage::helper('payline')->encodeString(substr($shippingAddress->getStreet1(), 0, 100));
@@ -143,8 +269,12 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
                 $array['shippingAddress']['phone'] = $shippingPhone;
             }
         }
+
+        /* get billing address title based on customer prefix */
+        $prefix = $billingAddress->getPrefix();
+        $array['billingAddress']['title'] = $this->_getBuyerTitle($prefix);
+
         $array['billingAddress']['name'] = Mage::helper('payline')->encodeString(substr($billingAddress->getName(), 0, 100));
-        $array['billingAddress']['title'] = Mage::helper('payline')->encodeString($billingAddress->getPrefix());
         $array['billingAddress']['firstName'] = Mage::helper('payline')->encodeString(substr($billingAddress->getFirstname(), 0, 100));
         $array['billingAddress']['lastName'] = Mage::helper('payline')->encodeString(substr($billingAddress->getLastname(), 0, 100));
         $array['billingAddress']['street1'] = Mage::helper('payline')->encodeString(substr($billingAddress->getStreet1(), 0, 100));
@@ -157,10 +287,10 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         if (preg_match($regexpPhone, $billingPhone)) {
             $array['billingAddress']['phone'] = $billingPhone;
         }
-        if($billingPhone){
-          $array['buyer']['mobilePhone'] = $billingPhone;
-        }else{
-          $array['buyer']['mobilePhone'] = $shippingPhone;
+        if ($billingPhone) {
+            $array['buyer']['mobilePhone'] = $billingPhone;
+        } else {
+            $array['buyer']['mobilePhone'] = $shippingPhone;
         }
         return $array;
     }
@@ -173,7 +303,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
     public function getPaymentUserData()
     {
         //If we do not have CardTokenPan
-        if(Mage::registry('current_payment_data')) {
+        if (Mage::registry('current_payment_data')) {
             $paymentData = Mage::registry('current_payment_data');
         } else {
             $paymentData = Mage::getSingleton('payline/session');
@@ -196,16 +326,16 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         $allAvailableContracts = Mage::helper('payline')->getCcContracts();
         foreach ($allAvailableContracts as $contract) {
 
-            if($contract->getId()==$currentCcType) {
+            if ($contract->getId() == $currentCcType) {
                 $currentContractType = $contract->getContractType();
                 break;
             }
         }
 
-        $contract = Mage::helper('payline')->getContractByType($currentContractType,true);
-        if($contract) {
+        $contract = Mage::helper('payline')->getContractByType($currentContractType, true);
+        if ($contract) {
             $paymentData->setCcType($contract->getId());
-            if(Mage::registry('current_payment_data')) {
+            if (Mage::registry('current_payment_data')) {
                 Mage::unregister('current_payment_data');
                 Mage::register('current_payment_data', $paymentData);
             }
@@ -224,7 +354,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         $currentId = $paymentData->getCcType();
         $contracts = Mage::helper('payline')->getCcContracts(true);
         foreach ($contracts as $contract) {
-            if($contract->getId()==$currentId) {
+            if ($contract->getId() == $currentId) {
                 return true;
             }
         }
@@ -240,7 +370,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
      */
     public function getDirectActionHeader(Mage_Sales_Model_Order_Payment $payment = null)
     {
-        if($payment) {
+        if ($payment) {
             $order = $payment->getOrder();
         } else {
             $_session = Mage::getSingleton('checkout/session');
@@ -263,7 +393,6 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
         // Get the contract
         $contract = Mage::getModel('payline/contract')->load($paymentData->getCcType());
 
-
         $array['payment']['contractNumber'] = $contract->getNumber();
 
         // Set the order date
@@ -285,7 +414,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
                 if ($itemPrice > 0) {
                     $product = array();
                     $product['ref'] = Mage::helper('payline')->encodeString(substr(str_replace(array("\r", "\n", "\t"), array('', '', ''), $item->getName()), 0, 50));
-                    $product['price'] = round($item->getPrice() * 100);
+                    $product['price'] = $itemPrice;
                     $product['quantity'] = round($item->getQtyOrdered());
                     $product['comment'] = Mage::helper('payline')->encodeString(substr(str_replace(array("\r", "\n", "\t"), array('', '', ''), $item->getDescription()), 0, 255));
                     $paylineSDK->setItem($product);
@@ -341,7 +470,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
      */
     public function finalizeDirectAction($author_result, $paylineSDK, $array, Mage_Sales_Model_Order_Payment $payment = null)
     {
-        if($payment) {
+        if ($payment) {
             $order = $payment->getOrder();
         } else {
             $_session = Mage::getSingleton('checkout/session');
@@ -381,7 +510,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
                     $array['wallet']['lastName'] = $array['buyer']['lastName'];
                     $array['wallet']['firstName'] = $array['buyer']['firstName'];
                     $array['wallet']['email'] = $array['buyer']['email'];
-                    if (! empty($array['card']['token'])) {
+                    if (!empty($array['card']['token'])) {
                         $array['wallet']['token'] = $array['card']['token'];
                         // TODO: Supprimer le ccid
                         $array['card']['cvx'] = $paymentData->getCcCid();
@@ -491,37 +620,35 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
 
                 // Add transaction (with payment action)
                 $this->addTransaction($order, $transactionId, $paymentAction);
-                
+
                 // check that payment data match order data
                 $orderTotal = round($order->getBaseGrandTotal() * 100);
                 $orderRef = $order->getRealOrderId();
                 $orderCurrency = Mage::helper('payline')->getNumericCurrencyCode($order->getBaseCurrencyCode());
 
-                if($orderTotal != $res['payment']['amount']){
-                    $orderErrorMsg = "[updateOrder] ERROR for order $orderRef - paid amount (".$res['payment']['amount'].") does not match order amount ($orderTotal)";
+                if ($orderTotal != $res['payment']['amount']) {
+                    $orderErrorMsg = "[updateOrder] ERROR for order $orderRef - paid amount (" . $res['payment']['amount'] . ") does not match order amount ($orderTotal)";
                     Mage::helper('payline/logger')->log($orderErrorMsg);
                     $orderOk = false;
                 }
-                if($orderCurrency != $res['payment']['currency']){
-                    $orderErrorMsg = "[updateOrder] ERROR for order $orderRef - payment currency (".$res['payment']['currency'].") does not match order amount ($orderCurrency)";
+                if ($orderCurrency != $res['payment']['currency']) {
+                    $orderErrorMsg = "[updateOrder] ERROR for order $orderRef - payment currency (" . $res['payment']['currency'] . ") does not match order amount ($orderCurrency)";
                     Mage::helper('payline/logger')->log($orderErrorMsg);
                     $orderOk = false;
                 }
 
 
-                if(!$orderOk) {
-                    if(!$orderErrorMsg) {
+                if (!$orderOk) {
+                    if (!$orderErrorMsg) {
                         $orderErrorMsg = "Unknown error in updateOrder for transaction: " . $transactionId;
                     }
 
                     Mage::helper('payline')->initPayline('CPT')->doReset(array('transactionID' => $transactionId, 'comment' => $orderErrorMsg));
                 }
-                
+
                 // Save the order
                 $order->save();
-            }
-
-            // Transaction NOT OK
+            } // Transaction NOT OK
             else {
 
                 // Update the stock
@@ -542,9 +669,9 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
             $items = $order->getAllItems();
             if ($items) {
                 foreach ($items as $item) {
-                    $quantity   = $item->getQtyOrdered(); // get Qty ordered
+                    $quantity = $item->getQtyOrdered(); // get Qty ordered
                     $product_id = $item->getProductId(); // get its ID
-                    $stock      = Mage::getModel('cataloginventory/stock_item')->loadByProduct($product_id); // Load the stock for this product
+                    $stock = Mage::getModel('cataloginventory/stock_item')->loadByProduct($product_id); // Load the stock for this product
                     $stock->setQty($stock->getQty() + $quantity); // Set to new Qty
                     //if qtty = 0 after order and order fails, set stock status is_in_stock to true
                     if ($stock->getQty() > $stock->getMinQty() && !$stock->getIsInStock()) {
@@ -552,7 +679,7 @@ class Monext_Payline_Helper_Payment extends Mage_Core_Helper_Abstract
                     }
                     $stock->save(); // Save
                 }
-                Mage::helper('payline/logger')->log('[updateStock] done for order '.$order->getIncrementId());
+                Mage::helper('payline/logger')->log('[updateStock] done for order ' . $order->getIncrementId());
             }
         }
     }

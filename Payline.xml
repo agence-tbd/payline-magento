@@ -1,21 +1,19 @@
 <_>
-   <form_key>5DalEQzMngjUsJjJ</form_key>
+   <form_key>4jMWWiO9o0z9oiLD</form_key>
    <name>Payline</name>
    <channel>community</channel>
    <version_ids>
       <version_ids>2</version_ids>
    </version_ids>
-   <summary>Paiement s&amp;#xE9;curis&amp;#xE9; via Payline, par Monext.</summary>
-   <description>Profitez d&amp;#xE8;s &amp;#xE0; pr&amp;#xE9;sent de l&apos;essor du march&amp;#xE9; de la vente &amp;#xE0; distance en proposant &amp;#xE0; vos clients une solution de paiement totalement s&amp;#xE9;curis&amp;#xE9;e.
-		Gr&amp;#xE2;ce &amp;#xE0; Payline vous permettez &amp;#xE0; vos clients de r&amp;#xE9;gler avec leur moyen de paiement habituel, quel que soit votre canal de vente. Vous leur proposez une interface de paiement
-		facile &amp;#xE0; utiliser, en mesure de vous accompagner dans votre d&amp;#xE9;veloppement &amp;#xE0; l&apos;international, en toute simplicit&amp;#xE9;.&amp;#xD;
-		&amp;#xD;
-		Fonctionnalit&amp;#xE9;s : autorisation, autorisation + validation, paiement en n fois, paiement par portefeuille et en 1 clic, validation et remboursement partiels, multi-boutique...</description>
+   <summary>Paiement par carte bancaire avec Payline, par Monext.</summary>
+   <description>Profitez dès à présent de l’essor du marché de la vente à distance en proposant à vos clients une solution de paiement totalement sécurisée. Grâce à Payline vous permettez à vos clients de régler avec leur moyen de paiement habituel, quel que soit votre canal de vente. Vous leur proposez une interface de paiement facile à utiliser, en mesure de vous accompagner dans votre développement à l’international, en toute simplicité.
+
+Fonctionnalités : autorisation, autorisation + capture, paiement en n fois, paiement en 1 clic, remboursement (partiel), multi-sites, multi-lingues</description>
    <license>GNU General Public License (GPL)</license>
    <license_uri>http://www.opensource.org/licenses/gpl-license.php</license_uri>
-   <version>1.8.6.2</version>
+   <version>1.8.7</version>
    <stability>stable</stability>
-   <notes>Ajout du paiement par shortcut (AMAZONPAY)</notes>
+   <notes>Ajout des paiements par Oney et Klarna</notes>
    <authors>
       <name>
          <name>Payline</name>
@@ -44,17 +42,20 @@
             <max/>
          </max>
          <files>
-            <files>          </files>
+            <files>              </files>
          </files>
       </package>
       <extension>
          <name>
             <name>Core</name>
+            <name>Core</name>
          </name>
          <min>
             <min/>
+            <min/>
          </min>
          <max>
+            <max/>
             <max/>
          </max>
       </extension>

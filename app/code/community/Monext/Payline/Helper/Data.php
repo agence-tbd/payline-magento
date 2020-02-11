@@ -628,6 +628,23 @@ class Monext_Payline_Helper_Data extends Mage_Core_Helper_Data
         return $string;
     }
 
+
+    /**
+     * @param $string
+     * @param int $length
+     * @return false|string
+     */
+    public function encodeStringAndTruncate($string, $length=0)
+    {
+        $encoded = str_replace(array("\r","\n","\t"), array('','',''), $string);
+        $encoded = $this->encodeString($encoded);
+        if($length>0) {
+            $encoded = substr($encoded,0,$length);
+        }
+
+        return $encoded;
+    }
+
     public function setOrderStatus($order, $status)
     {
         $state = Mage::getModel('sales/order_status')->getCollection()
@@ -897,12 +914,21 @@ class Monext_Payline_Helper_Data extends Mage_Core_Helper_Data
     				    $product['subcategory2'] = null;
     				}
 
-    				$product['ref'] = Mage::helper('payline')->encodeString(substr(str_replace(array("\r","\n","\t"), array('','',''),$item->getName()),0,50));
-    				$product['price'] = round($item->getPrice()*100);
+                    $product['ref'] = $this->encodeStringAndTruncate($item->getName(),50);
+
+                    $product['price'] = round($item->getPrice()*100);
     				$product['quantity'] = round($item->getQtyOrdered());
-    				$product['comment'] = Mage::helper('payline')->encodeString(substr(str_replace(array("\r","\n","\t"), array('','',''),$item->getDescription()), 0,255));
+
+                    $product['comment'] = $this->encodeStringAndTruncate($itemProduct->getDescription(),255);
+                    //For Oney Comment is a mandatory field
+                    if(empty($product['comment'])) {
+                        $product['comment'] = $product['ref'] ? $product['ref'] : $item->getSku();
+                    }
+
     				$product['taxRate'] = round($item->getTaxPercent()*100);
-    				$product['additionalData'] = Mage::helper('payline')->encodeString(substr(str_replace(array("\r","\n","\t"), array('','',''),$item->getAdditionalData()), 0,255));
+
+                    $product['additionalData'] = $this->encodeStringAndTruncate($item->getAdditionalData(),255);
+
     				$product['brand'] = $itemProduct->getAttributeText('manufacturer');
     				$paylineSDK->setItem($product);
     			}

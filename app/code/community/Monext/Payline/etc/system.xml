@@ -17,7 +17,7 @@
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
-                </payline_welcome>            
+                </payline_welcome>
                 <payline_common translate="label">
                     <label>Common settings</label>
                     <sort_order>200</sort_order>
@@ -25,18 +25,18 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <expanded>1</expanded>
-					          <fields>
+                    <fields>
                         <payline_enabled translate="label" module="payline">
-                          <config_path>payment/payline_common/payline_enabled</config_path>
-                          <label>Enabled</label>
-                          <frontend_type>select</frontend_type>
-                          <source_model>adminhtml/system_config_source_yesno</source_model>
-                          <backend_model>payline/adminhtml_system_config_backend_enabled</backend_model>
-                          <sort_order>1</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </payline_enabled>                              
+                            <config_path>payment/payline_common/payline_enabled</config_path>
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <backend_model>payline/adminhtml_system_config_backend_enabled</backend_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </payline_enabled>
                         <merchant_id translate="label" module="payline">
                             <config_path>payment/payline_common/merchant_id</config_path>
                             <label>Merchant ID</label>
@@ -47,7 +47,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><payline_enabled>1</payline_enabled></depends>
+                            <depends>
+                                <payline_enabled>1</payline_enabled>
+                            </depends>
                         </merchant_id>
                         <access_key translate="label">
                             <config_path>payment/payline_common/access_key</config_path>
@@ -59,7 +61,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><payline_enabled>1</payline_enabled></depends>
+                            <depends>
+                                <payline_enabled>1</payline_enabled>
+                            </depends>
                         </access_key>
                         <environment translate="label">
                             <config_path>payment/payline_common/environment</config_path>
@@ -71,8 +75,10 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><payline_enabled>1</payline_enabled></depends>
-                        </environment>                       
+                            <depends>
+                                <payline_enabled>1</payline_enabled>
+                            </depends>
+                        </environment>
                         <language translate="label">
                             <config_path>payment/payline_common/language</config_path>
                             <label>Language</label>
@@ -82,7 +88,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><payline_enabled>1</payline_enabled></depends>
+                            <depends>
+                                <payline_enabled>1</payline_enabled>
+                            </depends>
                         </language>
                         <proxy_enabled translate="label">
                             <config_path>payment/payline_common/proxy_enabled</config_path>
@@ -93,7 +101,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><payline_enabled>1</payline_enabled></depends>
+                            <depends>
+                                <payline_enabled>1</payline_enabled>
+                            </depends>
                         </proxy_enabled>
                         <proxy_host translate="label">
                             <config_path>payment/payline_common/proxy_host</config_path>
@@ -103,7 +113,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><proxy_enabled>1</proxy_enabled></depends>
+                            <depends>
+                                <proxy_enabled>1</proxy_enabled>
+                            </depends>
                         </proxy_host>
                         <proxy_port translate="label">
                             <config_path>payment/payline_common/proxy_port</config_path>
@@ -113,7 +125,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><proxy_enabled>1</proxy_enabled></depends>
+                            <depends>
+                                <proxy_enabled>1</proxy_enabled>
+                            </depends>
                         </proxy_port>
                         <proxy_login translate="label">
                             <config_path>payment/payline_common/proxy_login</config_path>
@@ -123,7 +137,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><proxy_enabled>1</proxy_enabled></depends>                            
+                            <depends>
+                                <proxy_enabled>1</proxy_enabled>
+                            </depends>
                         </proxy_login>
                         <proxy_password translate="label">
                             <config_path>payment/payline_common/proxy_password</config_path>
@@ -133,39 +149,41 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends><proxy_enabled>1</proxy_enabled></depends>
+                            <depends>
+                                <proxy_enabled>1</proxy_enabled>
+                            </depends>
                         </proxy_password>
-                     </fields>
-                    </payline_common>
-                    
-                    
-                    <payline_payments translate="label" module="payline">
-                        <label>Payment solutions</label>
-                        <sort_order>201</sort_order>
-                        <show_in_default>1</show_in_default>
-                        <show_in_website>1</show_in_website>
-                        <show_in_store>1</show_in_store>
-                        <frontend_class>complex</frontend_class>
-                        <frontend_model>payline/adminhtml_system_config_fieldset_group</frontend_model> 
-                        <!-- 
-                        <frontend_model>paypal/adminhtml_system_config_fieldset_group</frontend_model> 
-                        <comment>Process payments using your own internet merchant account.</comment>
-                        <help_url>https://merchant.paypal.com/cgi-bin/marketingweb?cmd=_render-content&amp;content_ID=merchant/payment_gateway</help_url>
-                        -->
-                        <fields/>
-                    </payline_payments>
-                        
+                    </fields>
+                </payline_common>
 
-                
-                
-                   <payline_workflows>
-                        <label>Worklows</label>
-                        <sort_order>202</sort_order>
-                        <show_in_default>1</show_in_default>
-                        <show_in_website>1</show_in_website>
-                        <show_in_store>1</show_in_store>
-                        <frontend_model>payline/adminhtml_system_config_fieldset_group</frontend_model> 
-                        <fields>           
+
+
+
+
+
+                <payline_payments translate="label" module="payline">
+                    <label>Payment solutions</label>
+                    <sort_order>220</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <frontend_class>complex</frontend_class>
+                    <frontend_model>payline/adminhtml_system_config_fieldset_group</frontend_model>
+                    <!--
+                    <frontend_model>paypal/adminhtml_system_config_fieldset_group</frontend_model>
+                    <comment>Process payments using your own internet merchant account.</comment>
+                    <help_url>https://merchant.paypal.com/cgi-bin/marketingweb?cmd=_render-content&amp;content_ID=merchant/payment_gateway</help_url>
+                    -->
+                    <fields/>
+                </payline_payments>
+                <payline_workflows>
+                    <label>Worklows</label>
+                    <sort_order>230</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <frontend_model>payline/adminhtml_system_config_fieldset_group</frontend_model>
+                    <fields>
                         <return_payment_refused translate="label comment">
                             <config_path>payment/payline_common/return_payment_refused</config_path>
                             <label>Return options</label>
@@ -176,7 +194,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </return_payment_refused>                                 
+                        </return_payment_refused>
                         <init_order_status translate="label">
                             <config_path>payment/payline_common/init_order_status</config_path>
                             <label>Initial order status</label>
@@ -187,7 +205,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </init_order_status>                                 
+                        </init_order_status>
                         <wait_order_status translate="label">
                             <config_path>payment/payline_common/wait_order_status</config_path>
                             <label>Wait order status</label>
@@ -216,7 +234,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </heading_payment_author>                        
+                        </heading_payment_author>
                         <authorized_order_status>
                             <config_path>payment/payline_common/authorized_order_status</config_path>
                             <label>payment is authorized</label>
@@ -314,14 +332,14 @@
                             <show_in_store>1</show_in_store>
                         </fraud_order_status>
                     </fields>
-                </payline_workflows>                
+                </payline_workflows>
                 <payline_contract translate="label">
                     <label>Payment methods</label>
-                    <sort_order>207</sort_order>
+                    <sort_order>240</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
-                    <frontend_model>payline/adminhtml_system_config_fieldset_group</frontend_model> 
+                    <frontend_model>payline/adminhtml_system_config_fieldset_group</frontend_model>
                     <fields>
                         <contract translate="label">
                             <config_path>payment/payline_contract/contract</config_path>
@@ -334,113 +352,196 @@
                             <show_in_store>1</show_in_store>
                         </contract>
                     </fields>
-                </payline_contract>    
-                
-                <payline_payments_availables>
-                    <PaylineCPT type="group" translate="label">
-                      <label>Payline - Cash web paiement</label>
-                      <sort_order>205</sort_order>
-                      <show_in_default>1</show_in_default>
-                      <show_in_website>1</show_in_website>
-                      <show_in_store>1</show_in_store>
-                      <group>payline_payments</group>
-                      <include>1</include>
-                      <activity_path>payment/PaylineCPT/active</activity_path>
-                      <frontend_type>text</frontend_type>
-                      <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
-                      <comment>Select payments in your shopping cart. Payline will process your card payments through the Payline Gateway.</comment>
-                      <fields>
-                        <active translate="label">
-                          <config_path>payment/PaylineCPT/active</config_path>
-                          <label>Enabled</label>
-                          <frontend_type>select</frontend_type>
-                          <source_model>adminhtml/system_config_source_yesno</source_model>
-                          <sort_order>10</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </active>
-                        <title translate="label">
-                          <config_path>payment/PaylineCPT/title</config_path>
-                          <label>Title</label>
-                          <frontend_type>text</frontend_type>
-                          <sort_order>20</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </title>
-                        <data_template translate="label comment">
-                          <config_path>payment/PaylineCPT/data_template</config_path>
-                          <label>User Experience</label>
-                          <frontend_type>select</frontend_type>
-                          <source_model>payline/datasource_datatemplate</source_model>                          
-                          <sort_order>25</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </data_template>
-                        <display_review translate="label">
-                          <config_path>payment/PaylineCPT/display_review</config_path>
-                          <label>Display Review</label>
-                          <frontend_type>select</frontend_type>
-                          <source_model>adminhtml/system_config_source_yesno</source_model>                          
-                          <sort_order>26</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </display_review>                        
-                        <template_url translate="label comment">
-                          <config_path>payment/PaylineCPT/template_url</config_path>
-                          <label>Template URL</label>
-                          <comment>URL to a custom HTML template. Refer to Payline documentation</comment>
-                          <frontend_type>text</frontend_type>
-                          <sort_order>30</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </template_url>
-                        <custom_payment_page_code translate="label comment">
-                          <config_path>payment/PaylineCPT/custom_payment_page_code</config_path>
-                          <label>Custom payment page code</label>
-                          <comment>ID of a style defined in Payline administration tool.</comment>
-                          <frontend_type>text</frontend_type>
-                          <sort_order>40</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </custom_payment_page_code>
-                        <custom_payment_page_code_ua_regexp translate="comment">
-                          <config_path>payment/PaylineCPT/custom_payment_page_code_ua_regexp</config_path>
-                            <label></label>
-                            <frontend_model>adminhtml/system_config_form_field_regexceptions</frontend_model>
-                            <backend_model>adminhtml/system_config_backend_design_exception</backend_model>
-                            <sort_order>41</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment>Match expressions in the same order as displayed in the configuration.</comment>
-                        </custom_payment_page_code_ua_regexp>
-                        <redirect_message translate="label">
-                          <config_path>payment/PaylineCPT/redirect_message</config_path>
-                            <label>Redirection message</label>
-                            <frontend_type>textarea</frontend_type>
-                            <sort_order>50</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </redirect_message>
+                </payline_contract>
 
-                        
-                        
-                        <advanced_settings_CPT type="group" translate="label">
-                            <label>Advanced settings</label>
-                            <!-- <frontend_class>config-advanced</frontend_class> -->
+
+
+                <contracts_specific_settings translate="label">
+                    <label>Contracts specific settings</label>
+                    <sort_order>300</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment>Please fill in the fields in the "Delivery configuration" and "Prefix configuration" section first and foremost. If you they are not filled in, the Default values will be used.</comment>
+                    <fields>
+                        <address translate="label,comment">
+                            <label>Delivery configuration</label>
+                            <config_path>payline/payline_common/address</config_path>
+                            <frontend_model>payline/adminhtml_system_config_delivery</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </address>
+                        <prefix translate="label,comment">
+                            <label>Prefix configuration</label>
+                            <config_path>payment/payline_common/prefix</config_path>
+                            <frontend_model>payline/adminhtml_system_config_prefix</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </prefix>
+                        <default_values type="group" translate="label">
+                            <label>Default values</label>
                             <frontend_type>text</frontend_type>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <sort_order>90</sort_order>
+                            <sort_order>50</sort_order>
                             <fields>
-                                <action_when_order_seven_day_old>
+                                <default_address_deliverytime translate="label,comment">
+                                    <label>Delivery time</label>
+                                    <config_path>payment/payline_common/default/deliverytime</config_path>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>payline/datasource_delivery_deliverytime</source_model>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                    <comment>Process payments using your own internet merchant account.</comment>
+                                </default_address_deliverytime>
+                                <default_address_deliverymode translate="label,comment">
+                                    <label>Delivery mode</label>
+                                    <config_path>payment/payline_common/default/deliverymode</config_path>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>payline/datasource_delivery_deliverymode</source_model>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </default_address_deliverymode>
+                                <default_address_delivery_expected_delay translate="label,comment">
+                                    <label>Delivery expected delay</label>
+                                    <config_path>payment/payline_common/default/delivery_expected_delay</config_path>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </default_address_delivery_expected_delay>
+                                <default_buyer_prefix translate="label,comment">
+                                    <label>Prefix</label>
+                                    <config_path>payment/payline_common/default/prefix</config_path>
+                                    <sort_order>40</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>0</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                    <frontend_type>select</frontend_type>
+                                    <source_model>payline/datasource_customer_title</source_model>
+                                </default_buyer_prefix>
+                            </fields>
+                        </default_values>
+
+                    </fields>
+                </contracts_specific_settings>
+
+
+
+
+                <payline_payments_availables>
+                    <PaylineCPT type="group" translate="label">
+                        <label>Payline - Cash web paiement</label>
+                        <sort_order>305</sort_order>
+                        <show_in_default>1</show_in_default>
+                        <show_in_website>1</show_in_website>
+                        <show_in_store>1</show_in_store>
+                        <group>payline_payments</group>
+                        <include>1</include>
+                        <activity_path>payment/PaylineCPT/active</activity_path>
+                        <frontend_type>text</frontend_type>
+                        <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
+                        <comment>Select payments in your shopping cart. Payline will process your card payments through the Payline Gateway.</comment>
+                        <fields>
+                            <active translate="label">
+                                <config_path>payment/PaylineCPT/active</config_path>
+                                <label>Enabled</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                <sort_order>10</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </active>
+                            <title translate="label">
+                                <config_path>payment/PaylineCPT/title</config_path>
+                                <label>Title</label>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>20</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </title>
+                            <data_template translate="label comment">
+                                <config_path>payment/PaylineCPT/data_template</config_path>
+                                <label>User Experience</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>payline/datasource_datatemplate</source_model>
+                                <sort_order>25</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </data_template>
+                            <display_review translate="label">
+                                <config_path>payment/PaylineCPT/display_review</config_path>
+                                <label>Display Review</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                <sort_order>26</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </display_review>
+                            <template_url translate="label comment">
+                                <config_path>payment/PaylineCPT/template_url</config_path>
+                                <label>Template URL</label>
+                                <comment>URL to a custom HTML template. Refer to Payline documentation</comment>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>30</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </template_url>
+                            <custom_payment_page_code translate="label comment">
+                                <config_path>payment/PaylineCPT/custom_payment_page_code</config_path>
+                                <label>Custom payment page code</label>
+                                <comment>ID of a style defined in Payline administration tool.</comment>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>40</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </custom_payment_page_code>
+                            <custom_payment_page_code_ua_regexp translate="comment">
+                                <config_path>payment/PaylineCPT/custom_payment_page_code_ua_regexp</config_path>
+                                <label></label>
+                                <frontend_model>adminhtml/system_config_form_field_regexceptions</frontend_model>
+                                <backend_model>adminhtml/system_config_backend_design_exception</backend_model>
+                                <sort_order>41</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                                <comment>Match expressions in the same order as displayed in the configuration.</comment>
+                            </custom_payment_page_code_ua_regexp>
+                            <redirect_message translate="label">
+                                <config_path>payment/PaylineCPT/redirect_message</config_path>
+                                <label>Redirection message</label>
+                                <frontend_type>textarea</frontend_type>
+                                <sort_order>50</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </redirect_message>
+
+                            <advanced_settings_CPT type="group" translate="label">
+                                <label>Advanced settings</label>
+                                <!-- <frontend_class>config-advanced</frontend_class> -->
+                                <frontend_type>text</frontend_type>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <sort_order>90</sort_order>
+                                <fields>
+                                    <action_when_order_seven_day_old>
                                         <config_path>payment/PaylineCPT/action_when_order_seven_day_old</config_path>
                                         <label>Action when order is at least 7 days old</label>
                                         <comment>Order action when trying to capture and order is at least 7 seven days old</comment>
@@ -450,18 +551,18 @@
                                         <show_in_default>1</show_in_default>
                                         <show_in_website>1</show_in_website>
                                         <show_in_store>1</show_in_store>
-                                </action_when_order_seven_day_old>
-                                <payline_payment_action translate="label">
-                                      <config_path>payment/PaylineCPT/payline_payment_action</config_path>
-                                      <label>Payment action</label>
-                                      <frontend_type>select</frontend_type>
-                                      <source_model>payline/datasource_paymentactions</source_model>
-                                      <sort_order>60</sort_order>
-                                      <show_in_default>1</show_in_default>
-                                      <show_in_website>1</show_in_website>
-                                      <show_in_store>1</show_in_store>
-                                </payline_payment_action>
-                                <capture_payment_when_i_said translate="label">
+                                    </action_when_order_seven_day_old>
+                                    <payline_payment_action translate="label">
+                                        <config_path>payment/PaylineCPT/payline_payment_action</config_path>
+                                        <label>Payment action</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>payline/datasource_paymentactions</source_model>
+                                        <sort_order>60</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </payline_payment_action>
+                                    <capture_payment_when_i_said translate="label">
                                         <config_path>payment/PaylineCPT/capture_payment_when_i_said</config_path>
                                         <label>Capture payment when action / status is triggered</label>
                                         <comment></comment>
@@ -473,10 +574,10 @@
                                         <show_in_store>1</show_in_store>
                                         <!-- 100 => authorization -->
                                         <depends>
-                                          <payline_payment_action>100</payline_payment_action>
+                                            <payline_payment_action>100</payline_payment_action>
                                         </depends>
-                                </capture_payment_when_i_said>
-                                <send_wallet_id translate="label comment">
+                                    </capture_payment_when_i_said>
+                                    <send_wallet_id translate="label comment">
                                         <config_path>payment/PaylineCPT/send_wallet_id</config_path>
                                         <label>Send wallet id</label>
                                         <comment>If wallet id is provided, wallet payment will be available during web payment</comment>
@@ -486,9 +587,9 @@
                                         <show_in_default>1</show_in_default>
                                         <show_in_website>1</show_in_website>
                                         <show_in_store>1</show_in_store>
-                                </send_wallet_id>
-                                <automate_invoice_creation>
-                                       <config_path>payment/PaylineCPT/automate_invoice_creation</config_path>
+                                    </send_wallet_id>
+                                    <automate_invoice_creation>
+                                        <config_path>payment/PaylineCPT/automate_invoice_creation</config_path>
                                         <label>Automate invoice creation</label>
                                         <frontend_type>select</frontend_type>
                                         <source_model>payline/datasource_status_invoice</source_model>
@@ -496,329 +597,327 @@
                                         <show_in_default>1</show_in_default>
                                         <show_in_website>1</show_in_website>
                                         <show_in_store>1</show_in_store>
-                                </automate_invoice_creation>                            
-                            </fields>
-                        </advanced_settings_CPT>
-                      </fields>
-            </PaylineCPT>
+                                    </automate_invoice_creation>
+                                </fields>
+                            </advanced_settings_CPT>
+                        </fields>
+                    </PaylineCPT>
 
-            <PaylineSHORTCUT type="group" translate="label comment"  module="payline">
-                    <label>Payline - Shortcut</label>
-                    <sort_order>210</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <group>payline_payments</group>
-                    <include>1</include>
-                    <activity_path>payline/PaylineSHORTCUT/active</activity_path>
-                    <frontend_type>text</frontend_type>
-                    <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
-                    <comment>Use payment button shortcut directly in your shopping cart.</comment>
-                    <fields>
-                        <active>
-                            <!--<config_path>payment/PaylineCPT/active</config_path>-->
-                            <label>Enabled</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </active>
-                        <shipping_method_allowed>
-                            <label>Allowed shipping method</label>
-                            <comment>Shipping method to use with shortcut.</comment>
-                            <source_model>payline/datasource_Shipping_AllMethods</source_model>
-                            <frontend_type>multiselect</frontend_type>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </shipping_method_allowed>
-                        <use_contracts translate="label comment">
-                            <label>Select contract used</label>
-                            <source_model>payline/datasource_contracts</source_model>
-                            <frontend_type>select</frontend_type>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </use_contracts>
-                        <checkout_method translate="label comment">
-                            <label>Checkout method</label>
-                            <source_model>payline/datasource_checkout_method</source_model>
-                            <frontend_type>select</frontend_type>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </checkout_method>
-                    </fields>
-            </PaylineSHORTCUT>
-
-
+                    <PaylineSHORTCUT type="group" translate="label comment" module="payline">
+                        <label>Payline - Shortcut</label>
+                        <sort_order>310</sort_order>
+                        <show_in_default>1</show_in_default>
+                        <show_in_website>1</show_in_website>
+                        <show_in_store>1</show_in_store>
+                        <group>payline_payments</group>
+                        <include>1</include>
+                        <activity_path>payline/PaylineSHORTCUT/active</activity_path>
+                        <frontend_type>text</frontend_type>
+                        <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
+                        <comment>Use payment button shortcut directly in your shopping cart.</comment>
+                        <fields>
+                            <active>
+                                <!--<config_path>payment/PaylineCPT/active</config_path>-->
+                                <label>Enabled</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                <sort_order>10</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </active>
+                            <shipping_method_allowed>
+                                <label>Allowed shipping method</label>
+                                <comment>Shipping method to use with shortcut.</comment>
+                                <source_model>payline/datasource_shipping_allMethods</source_model>
+                                <frontend_type>multiselect</frontend_type>
+                                <sort_order>20</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </shipping_method_allowed>
+                            <use_contracts translate="label comment">
+                                <label>Select contract used</label>
+                                <source_model>payline/datasource_contracts</source_model>
+                                <frontend_type>select</frontend_type>
+                                <sort_order>30</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </use_contracts>
+                            <checkout_method translate="label comment">
+                                <label>Checkout method</label>
+                                <source_model>payline/datasource_checkout_method</source_model>
+                                <frontend_type>select</frontend_type>
+                                <sort_order>40</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </checkout_method>
+                        </fields>
+                    </PaylineSHORTCUT>
 
 
-            <PaylineNX type="group" translate="label">
-              <label>Payline - Nx web payment</label>
-              <sort_order>215</sort_order>
-              <show_in_default>1</show_in_default>
-              <show_in_website>1</show_in_website>
-              <show_in_store>1</show_in_store>
-              <group>payline_payments</group>
-              <include>1</include>
-              <activity_path>payment/PaylineNX/active</activity_path>
-              <frontend_type>text</frontend_type>
-              <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>  
-              <comment>Customer will select card payments and schedule through the Payline Gateway.</comment>
-              <fields>
-                <active translate="label">
-                  <config_path>payment/PaylineNX/active</config_path>
-                  <label>Enabled</label>
-                  <frontend_type>select</frontend_type>
-                  <source_model>adminhtml/system_config_source_yesno</source_model>
-                  <sort_order>10</sort_order>
-                  <show_in_default>1</show_in_default>
-                  <show_in_website>1</show_in_website>
-                  <show_in_store>1</show_in_store>
-                </active>
-                <title translate="label">
-                  <config_path>payment/PaylineNX/title</config_path>
-                  <label>Title</label>
-                  <frontend_type>text</frontend_type>
-                  <sort_order>20</sort_order>
-                  <show_in_default>1</show_in_default>
-                  <show_in_website>1</show_in_website>
-                  <show_in_store>1</show_in_store>
-                </title>
-                <cost_type translate="label">
-                  <config_path>payment/PaylineNX/cost_type</config_path>
-                  <label>Costs</label>
-                  <frontend_type>select</frontend_type>
-                  <source_model>payline/datasource_costs</source_model>
-                  <sort_order>21</sort_order>
-                  <show_in_default>1</show_in_default>
-                  <show_in_website>1</show_in_website>
-                  <show_in_store>1</show_in_store>
-                </cost_type>
-                <cost_amount translate="label">
-                  <config_path>payment/PaylineNX/cost_amount</config_path>
-                  <label>Costs amount/percentage</label>
-                  <frontend_type>text</frontend_type>
-                  <sort_order>22</sort_order>
-                  <show_in_default>1</show_in_default>
-                  <show_in_website>1</show_in_website>
-                  <show_in_store>1</show_in_store>
-                </cost_amount>
-                <template_url translate="label comment">
-                  <config_path>payment/PaylineNX/template_url</config_path>
-                  <label>Template URL</label>
-                  <comment>URL to a custom HTML template. Refer to Payline documentation</comment>
-                  <frontend_type>text</frontend_type>
-                  <sort_order>30</sort_order>
-                  <show_in_default>1</show_in_default>
-                  <show_in_website>1</show_in_website>
-                  <show_in_store>1</show_in_store>
-                </template_url>
-                <custom_payment_page_code translate="label comment">
-                  <config_path>payment/PaylineNX/custom_payment_page_code</config_path>
-                  <label>Custom payment page code</label>
-                  <comment>ID of a style defined in Payline administration tool.</comment>
-                  <frontend_type>text</frontend_type>
-                  <sort_order>40</sort_order>
-                  <show_in_default>1</show_in_default>
-                  <show_in_website>1</show_in_website>
-                  <show_in_store>1</show_in_store>
-                </custom_payment_page_code>
-                <custom_payment_page_code_ua_regexp translate="comment">
-                  <config_path>payment/PaylineNX/custom_payment_page_code_ua_regexp</config_path>
-                    <label></label>
-                    <frontend_model>adminhtml/system_config_form_field_regexceptions</frontend_model>
-                    <backend_model>adminhtml/system_config_backend_design_exception</backend_model>
-                    <sort_order>41</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <comment>Match expressions in the same order as displayed in the configuration.</comment>
-                </custom_payment_page_code_ua_regexp>
-                <redirect_message translate="label">
-                  <config_path>payment/PaylineNX/redirect_message</config_path>
-                    <label>Redirection message</label>
-                    <frontend_type>textarea</frontend_type>
-                    <sort_order>50</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                </redirect_message>
-                <advanced_settings_NX type="group" translate="label">
-                    <label>Advanced settings</label>
-                    <!-- <frontend_class>config-advanced</frontend_class> -->
-                    <frontend_type>text</frontend_type>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <sort_order>60</sort_order>
-                    <fields>
-                        <billing_occurrences translate="label">
-                          <config_path>payment/PaylineNX/billing_occurrences</config_path>
-                          <label>Billing occurences</label>
-                          <frontend_type>select</frontend_type>
-                          <source_model>payline/datasource_billingoccurrences</source_model>
-                          <sort_order>60</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </billing_occurrences>
-                        <billing_cycle translate="label">
-                          <config_path>payment/PaylineNX/billing_cycle</config_path>
-                          <label>Billing cycle</label>
-                          <frontend_type>select</frontend_type>
-                          <source_model>payline/datasource_billingcycles</source_model>
-                          <sort_order>70</sort_order>
-                          <show_in_default>1</show_in_default>
-                          <show_in_website>1</show_in_website>
-                          <show_in_store>1</show_in_store>
-                        </billing_cycle>
-                        <send_wallet_id translate="label comment">
-                          <config_path>payment/PaylineNX/send_wallet_id</config_path>
-                            <label>Send wallet id</label>
-                            <comment>If wallet id is provided, wallet payment will be available during web payment</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>80</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </send_wallet_id>
-                        <automate_invoice_creation>
-                          <config_path>payment/PaylineNX/automate_invoice_creation</config_path>
-                            <label>Automate invoice creation</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>payline/datasource_status_invoice</source_model>
-                            <sort_order>90</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </automate_invoice_creation>
-                        <status_when_payline_schedule_alert>
-                          <config_path>payment/PaylineNX/status_when_payline_schedule_alert</config_path>
-                            <label>Order status when credit card expiration date is close</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>payline/datasource_statusrowempty</source_model>
-                            <sort_order>100</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>1</can_be_empty>
-                        </status_when_payline_schedule_alert>
-                        <status_when_credit_card_schedule_is_expired>
-                          <config_path>payment/PaylineNX/status_when_credit_card_schedule_is_expired</config_path>
-                            <label>Order status when an instalment fails</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>payline/datasource_statusrowempty</source_model>
-                            <sort_order>110</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>1</can_be_empty>
-                        </status_when_credit_card_schedule_is_expired>
-                    </fields>
-                </advanced_settings_NX>
-              </fields>
-            </PaylineNX>
-            <PaylineDIRECT type="group" translate="label">
-                    <label>Payline - direct payment</label>
-                    <sort_order>220</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <group>payline_payments</group>
-                    <include>1</include>
-                    <activity_path>payment/PaylineDIRECT/active</activity_path>
-                    <frontend_type>text</frontend_type>
-                    <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
-                    <comment>Accept payments with a PCI-compliant checkout that keeps customers on your site.</comment>                  
-                    <fields>
-                        <active translate="label">
-                            <config_path>payment/PaylineDIRECT/active</config_path>
-                            <label>Enabled</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>1</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </active>
-                        <title translate="label">
-                            <config_path>payment/PaylineDIRECT/title</config_path>
-                            <label>Title</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </title>
-                        <web2token_key translate="label">
-                            <config_path>payment/PaylineDIRECT/web2token_key</config_path>
-                            <label>Key web2token</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>25</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment>This key available in your Payline admin panel (Configuration/Key Management) secure card information collect.</comment>
-                        </web2token_key>
-                        <payline_payment_action translate="label">
-                            <config_path>payment/PaylineDIRECT/payline_payment_action</config_path>
-                            <label>Payment action</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>payline/datasource_paymentactions</source_model>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </payline_payment_action>
-                        <capture_payment_when_i_said translate="label">
-                            <config_path>payment/PaylineDIRECT/capture_payment_when_i_said</config_path>
-                            <label>Capture payment when action / status is triggered</label>
-                            <comment></comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>payline/datasource_Capturepaymentoptions</source_model>
-                            <sort_order>31</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <!-- 100 => authorization -->
-                            <depends>
-                                <payline_payment_action>100</payline_payment_action>
-                            </depends>
-                        </capture_payment_when_i_said>
-                        <automate_invoice_creation>
-                            <config_path>payment/PaylineDIRECT/automate_invoice_creation</config_path>
-                            <label>Automate invoice creation</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>payline/datasource_status_invoice</source_model>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </automate_invoice_creation>
-                        <action_when_order_seven_day_old>
-                            <config_path>payment/PaylineDIRECT/action_when_order_seven_day_old</config_path>
-                            <label>Action when order is at least 7 days old</label>
-                            <comment>Order action when trying to capture and order is at least 7 seven days old</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>payline/datasource_paymentactionsreauth</source_model>
-                            <sort_order>50</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </action_when_order_seven_day_old>
-                      </fields>
+                    <PaylineNX type="group" translate="label">
+                        <label>Payline - Nx web payment</label>
+                        <sort_order>315</sort_order>
+                        <show_in_default>1</show_in_default>
+                        <show_in_website>1</show_in_website>
+                        <show_in_store>1</show_in_store>
+                        <group>payline_payments</group>
+                        <include>1</include>
+                        <activity_path>payment/PaylineNX/active</activity_path>
+                        <frontend_type>text</frontend_type>
+                        <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
+                        <comment>Customer will select card payments and schedule through the Payline Gateway.</comment>
+                        <fields>
+                            <active translate="label">
+                                <config_path>payment/PaylineNX/active</config_path>
+                                <label>Enabled</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                <sort_order>10</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </active>
+                            <title translate="label">
+                                <config_path>payment/PaylineNX/title</config_path>
+                                <label>Title</label>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>20</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </title>
+                            <cost_type translate="label">
+                                <config_path>payment/PaylineNX/cost_type</config_path>
+                                <label>Costs</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>payline/datasource_costs</source_model>
+                                <sort_order>21</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </cost_type>
+                            <cost_amount translate="label">
+                                <config_path>payment/PaylineNX/cost_amount</config_path>
+                                <label>Costs amount/percentage</label>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>22</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </cost_amount>
+                            <template_url translate="label comment">
+                                <config_path>payment/PaylineNX/template_url</config_path>
+                                <label>Template URL</label>
+                                <comment>URL to a custom HTML template. Refer to Payline documentation</comment>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>30</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </template_url>
+                            <custom_payment_page_code translate="label comment">
+                                <config_path>payment/PaylineNX/custom_payment_page_code</config_path>
+                                <label>Custom payment page code</label>
+                                <comment>ID of a style defined in Payline administration tool.</comment>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>40</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </custom_payment_page_code>
+                            <custom_payment_page_code_ua_regexp translate="comment">
+                                <config_path>payment/PaylineNX/custom_payment_page_code_ua_regexp</config_path>
+                                <label></label>
+                                <frontend_model>adminhtml/system_config_form_field_regexceptions</frontend_model>
+                                <backend_model>adminhtml/system_config_backend_design_exception</backend_model>
+                                <sort_order>41</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                                <comment>Match expressions in the same order as displayed in the configuration.</comment>
+                            </custom_payment_page_code_ua_regexp>
+                            <redirect_message translate="label">
+                                <config_path>payment/PaylineNX/redirect_message</config_path>
+                                <label>Redirection message</label>
+                                <frontend_type>textarea</frontend_type>
+                                <sort_order>50</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </redirect_message>
+                            <advanced_settings_NX type="group" translate="label">
+                                <label>Advanced settings</label>
+                                <!-- <frontend_class>config-advanced</frontend_class> -->
+                                <frontend_type>text</frontend_type>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <sort_order>60</sort_order>
+                                <fields>
+                                    <billing_occurrences translate="label">
+                                        <config_path>payment/PaylineNX/billing_occurrences</config_path>
+                                        <label>Billing occurences</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>payline/datasource_billingoccurrences</source_model>
+                                        <sort_order>60</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </billing_occurrences>
+                                    <billing_cycle translate="label">
+                                        <config_path>payment/PaylineNX/billing_cycle</config_path>
+                                        <label>Billing cycle</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>payline/datasource_billingcycles</source_model>
+                                        <sort_order>70</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </billing_cycle>
+                                    <send_wallet_id translate="label comment">
+                                        <config_path>payment/PaylineNX/send_wallet_id</config_path>
+                                        <label>Send wallet id</label>
+                                        <comment>If wallet id is provided, wallet payment will be available during web payment</comment>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>adminhtml/system_config_source_yesno</source_model>
+                                        <sort_order>80</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </send_wallet_id>
+                                    <automate_invoice_creation>
+                                        <config_path>payment/PaylineNX/automate_invoice_creation</config_path>
+                                        <label>Automate invoice creation</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>payline/datasource_status_invoice</source_model>
+                                        <sort_order>90</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                    </automate_invoice_creation>
+                                    <status_when_payline_schedule_alert>
+                                        <config_path>payment/PaylineNX/status_when_payline_schedule_alert</config_path>
+                                        <label>Order status when credit card expiration date is close</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>payline/datasource_statusrowempty</source_model>
+                                        <sort_order>100</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                        <can_be_empty>1</can_be_empty>
+                                    </status_when_payline_schedule_alert>
+                                    <status_when_credit_card_schedule_is_expired>
+                                        <config_path>payment/PaylineNX/status_when_credit_card_schedule_is_expired</config_path>
+                                        <label>Order status when an instalment fails</label>
+                                        <frontend_type>select</frontend_type>
+                                        <source_model>payline/datasource_statusrowempty</source_model>
+                                        <sort_order>110</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>1</show_in_store>
+                                        <can_be_empty>1</can_be_empty>
+                                    </status_when_credit_card_schedule_is_expired>
+                                </fields>
+                            </advanced_settings_NX>
+                        </fields>
+                    </PaylineNX>
+                    <PaylineDIRECT type="group" translate="label">
+                        <label>Payline - direct payment</label>
+                        <sort_order>320</sort_order>
+                        <show_in_default>1</show_in_default>
+                        <show_in_website>1</show_in_website>
+                        <show_in_store>1</show_in_store>
+                        <group>payline_payments</group>
+                        <include>1</include>
+                        <activity_path>payment/PaylineDIRECT/active</activity_path>
+                        <frontend_type>text</frontend_type>
+                        <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
+                        <comment>Accept payments with a PCI-compliant checkout that keeps customers on your site.</comment>
+                        <fields>
+                            <active translate="label">
+                                <config_path>payment/PaylineDIRECT/active</config_path>
+                                <label>Enabled</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>adminhtml/system_config_source_yesno</source_model>
+                                <sort_order>1</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </active>
+                            <title translate="label">
+                                <config_path>payment/PaylineDIRECT/title</config_path>
+                                <label>Title</label>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>20</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </title>
+                            <web2token_key translate="label">
+                                <config_path>payment/PaylineDIRECT/web2token_key</config_path>
+                                <label>Key web2token</label>
+                                <frontend_type>text</frontend_type>
+                                <sort_order>25</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                                <comment>This key available in your Payline admin panel (Configuration/Key Management) secure card information collect.</comment>
+                            </web2token_key>
+                            <payline_payment_action translate="label">
+                                <config_path>payment/PaylineDIRECT/payline_payment_action</config_path>
+                                <label>Payment action</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>payline/datasource_paymentactions</source_model>
+                                <sort_order>30</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </payline_payment_action>
+                            <capture_payment_when_i_said translate="label">
+                                <config_path>payment/PaylineDIRECT/capture_payment_when_i_said</config_path>
+                                <label>Capture payment when action / status is triggered</label>
+                                <comment></comment>
+                                <frontend_type>select</frontend_type>
+                                <source_model>payline/datasource_Capturepaymentoptions</source_model>
+                                <sort_order>31</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                                <!-- 100 => authorization -->
+                                <depends>
+                                    <payline_payment_action>100</payline_payment_action>
+                                </depends>
+                            </capture_payment_when_i_said>
+                            <automate_invoice_creation>
+                                <config_path>payment/PaylineDIRECT/automate_invoice_creation</config_path>
+                                <label>Automate invoice creation</label>
+                                <frontend_type>select</frontend_type>
+                                <source_model>payline/datasource_status_invoice</source_model>
+                                <sort_order>40</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </automate_invoice_creation>
+                            <action_when_order_seven_day_old>
+                                <config_path>payment/PaylineDIRECT/action_when_order_seven_day_old</config_path>
+                                <label>Action when order is at least 7 days old</label>
+                                <comment>Order action when trying to capture and order is at least 7 seven days old</comment>
+                                <frontend_type>select</frontend_type>
+                                <source_model>payline/datasource_paymentactionsreauth</source_model>
+                                <sort_order>50</sort_order>
+                                <show_in_default>1</show_in_default>
+                                <show_in_website>1</show_in_website>
+                                <show_in_store>1</show_in_store>
+                            </action_when_order_seven_day_old>
+                        </fields>
                     </PaylineDIRECT>
-                    
+
                     <PaylineWALLET type="group" translate="label">
                         <label>Payline - wallet payment</label>
-                        <sort_order>225</sort_order>
+                        <sort_order>325</sort_order>
                         <show_in_default>1</show_in_default>
                         <show_in_website>1</show_in_website>
                         <show_in_store>1</show_in_store>
@@ -827,7 +926,7 @@
                         <activity_path>payment/PaylineWALLET/active</activity_path>
                         <frontend_type>text</frontend_type>
                         <frontend_model>payline/adminhtml_system_config_fieldset_payment</frontend_model>
-                        <comment>Allow customer to use a virtual wallet to store payments.</comment>                  
+                        <comment>Allow customer to use a virtual wallet to store payments.</comment>
                         <fields>
                             <active translate="label">
                                 <config_path>payment/PaylineWALLET/active</config_path>
@@ -858,7 +957,7 @@
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
-                            </automate_wallet_subscription>                        
+                            </automate_wallet_subscription>
                             <template_url translate="label comment">
                                 <config_path>payment/PaylineWALLET/template_url</config_path>
                                 <label>Template URL</label>
@@ -911,7 +1010,7 @@
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
                             </update_payment_details>
-                            
+
                             <heading_one_clic translate="label">
                                 <label>One Click</label>
                                 <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
@@ -919,8 +1018,8 @@
                                 <show_in_default>1</show_in_default>
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
-                            </heading_one_clic>  
-                            
+                            </heading_one_clic>
+
                             <enable_one_clic translate="label">
                                 <config_path>payment/PaylineWALLET/enable_one_clic</config_path>
                                 <label>Enable One Clic function</label>
@@ -940,7 +1039,7 @@
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
                             </one_clic_block_title>
-                            
+
                             <payline_register-oneclick_customeraccount translate="label">
                                 <config_path>payment/PaylineWALLET/payline_register-oneclick_customeraccount</config_path>
                                 <label>registration CMS block id in customer account</label>
@@ -961,10 +1060,8 @@
                                 <show_in_website>1</show_in_website>
                                 <show_in_store>1</show_in_store>
                             </payline_register-oneclick_catalog>
-                            
-                            
-                            
-                            
+
+
                             <advanced_settings_WALLET type="group" translate="label">
                                 <label>Advanced settings</label>
                                 <!-- <frontend_class>config-advanced</frontend_class> -->
@@ -973,7 +1070,7 @@
                                 <show_in_website>1</show_in_website>
                                 <sort_order>130</sort_order>
                                 <fields>
-        
+
                                     <payline_payment_action translate="label">
                                         <config_path>payment/PaylineWALLET/payline_payment_action</config_path>
                                         <label>Payment action</label>
@@ -1017,7 +1114,7 @@
                                         <frontend_type>select</frontend_type>
                                         <source_model>payline/datasource_walletsecurity</source_model>
                                         <sort_order>73</sort_order>
-                                         <show_in_default>1</show_in_default>
+                                        <show_in_default>1</show_in_default>
                                         <show_in_website>1</show_in_website>
                                         <show_in_store>1</show_in_store>
                                     </wallet_payment_security>
@@ -1044,13 +1141,16 @@
                                     </automate_invoice_creation>
                                 </fields>
                             </advanced_settings_WALLET>
-                    
                         </fields>
                     </PaylineWALLET>
                 </payline_payments_availables>
-                
-                                     
-			</groups>
-		</payline>
-	</sections>
+
+
+
+
+
+
+            </groups>
+        </payline>
+    </sections>
 </config>
